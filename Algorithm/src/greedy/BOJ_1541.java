@@ -3,28 +3,30 @@ package greedy;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.util.Arrays;
 
 public class BOJ_1541 {
 
+	private static int[] arr;
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		String input = br.readLine();
-		int result = 0;
-		String[] inputSplit = input.split("\\-");
-		ArrayList<Integer> al = new ArrayList<>();
-		for(int i = 0; i < inputSplit.length; i++) {
-			int sum = 0;
-			String[] numSplit = inputSplit[i].split("\\+");
-			for(int j = 0; j < numSplit.length; j++) {
-				sum += Integer.parseInt(numSplit[j]);
-			}
-			al.add(sum);
+		int input = Integer.parseInt(br.readLine());
+		
+		arr = new int[input];
+		
+		String inputNum   = br.readLine();
+		String[] numSplit = inputNum.split(" ");
+		
+		for(int i = 0; i < numSplit.length; i++) {
+			arr[i] = Integer.parseInt(numSplit[i]);
 		}
-		result = al.get(0);
-		for(int i = 1; i < al.size(); i++) {
-			result -=al.get(i);
+		Arrays.sort(arr);
+		
+		int sum = arr[0];
+		for(int i = 1; i < arr.length; i++) {
+			arr[i] += arr[i-1];
+			sum += arr[i];
 		}
-		System.out.println(result);
+		System.out.println(sum);
 	}
 }
