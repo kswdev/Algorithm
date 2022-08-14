@@ -9,6 +9,7 @@ public class BOJ_2667 {
 
 	private static int[][] arr;
 	private static boolean[][] visited;
+	private static int[] danNum;
 	private static Queue<Integer> q;
 	private int[] dx = {0, 0, -1, 1};
 	private int[] dy = {1, -1, 0, 0};
@@ -25,11 +26,10 @@ public class BOJ_2667 {
 				arr[i][j] = input.charAt(j);
 			}
 		}
-		
-		
 	}
 	
 	public static void bfs(int x, int y) {
+		visited[x][y] = true;
 		
 	}
 }
