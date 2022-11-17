@@ -11,8 +11,8 @@ public class BOJ_11052 {
 		
 		int n = Integer.parseInt(br.readLine());
 		
-		int[] arr  = new int[n+1];
-		int[] dp = new int[n+1];
+		int[] arr = new int[n+1];
+		int[] dp  = new int[n+1];
 		
 		String input = br.readLine();
 		String[] inputSplit = input.split(" ");
