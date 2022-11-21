@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class BOJ_2583 {
@@ -50,12 +51,6 @@ public class BOJ_2583 {
 		}
 		for(int i = 0; i < M; i++) {
 			for(int j = 0; j < N; j++) {
-				System.out.print(map[i][j] + " ");
-			}
-			System.out.println("");
-		}
-		for(int i = 0; i < M; i++) {
-			for(int j = 0; j < N; j++) {
 				if(map[i][j] != 1) {
 					count = 1;
 					visited[i][j] = true;
@@ -66,8 +61,9 @@ public class BOJ_2583 {
 		}
 		
 		System.out.println(list.size());
+		list.sort(Comparator.naturalOrder());
 		for (Integer integer : list) {
-			System.out.println(integer+ " ");
+			System.out.print(integer+ " ");
 		}
 	}
 	public static void dfs(int i, int j) {
