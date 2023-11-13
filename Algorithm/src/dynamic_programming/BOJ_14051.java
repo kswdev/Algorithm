@@ -8,8 +8,8 @@ import java.io.InputStreamReader;
 public class BOJ_14051 {
 
     private static int N;
-    private static int[] date;
-    private static int[] val;
+    private static int[] t;
+    private static int[] p;
     private static int[] dp;
 
     public static void main(String[] args) throws IOException {
@@ -17,17 +17,30 @@ public class BOJ_14051 {
 
         N = Integer.parseInt(br.readLine());
 
-        date = new int[N+1];
-        val  = new int[N+1];
-        dp   = new int[N+1];
+        t  = new int[N+1];
+        p  = new int[N+1];
+        dp = new int[N+1];
+
+        int max = 0;
 
         String input;
-        for(int i = 1; i < N + 1; i++) {
+        for(int i = 0; i < N; i++) {
             input = br.readLine();
-            date[i] = Integer.parseInt(input.split(" ")[0]);
-            val[i]  = Integer.parseInt(input.split(" ")[1]);
+            t[i] = Integer.parseInt(input.split(" ")[0]);
+            p[i]  = Integer.parseInt(input.split(" ")[1]);
         }
 
+        for(int i = 0; i <= N; i++) {
+            dp[i] = Math.max(max, dp[i]);
 
+            if (t[i] + i <= N) {
+                dp[t[i] + i] = Math.max(dp[t[i] + i], p[i] + dp[i]);
+            }
+
+            max = Math.max(max, dp[i]);
+
+        }
+
+        System.out.println(max);
     }
 }
