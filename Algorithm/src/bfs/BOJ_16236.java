@@ -1,6 +1,7 @@
 package bfs;
 
 import java.io.*;
+import java.util.LinkedList;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
@@ -40,12 +41,31 @@ public class BOJ_16236 {
                 }
             }
         }
-
         System.out.println(targeting(babyShark));
 
-        System.out.println(babyShark.targetX);
-        System.out.println(babyShark.targetY);
         br.close();
+
+        bfs(babyShark);
+    }
+
+    public static void bfs(BabyShark babyShark) {
+        q = new LinkedList<>();
+        q.add(new int[] {babyShark.x, babyShark.y});
+
+        while (!q.isEmpty()) {
+            int nx = q.peek()[0];
+            int ny = q.peek()[1];
+
+            q.poll();
+            for(int i = 0; i < 4; i++) {
+                int curx = nx + dx[i];
+                int cury = ny + dy[i];
+
+                if(curx < 0 || cury < 0 || curx > N || cury > N) continue;
+
+                if(map[curx][cury] > babyShark.height) continue;
+            }
+        }
     }
 
     public static boolean targeting(BabyShark shark) {
