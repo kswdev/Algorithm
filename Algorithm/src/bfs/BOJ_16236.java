@@ -8,8 +8,9 @@ import java.util.StringTokenizer;
 public class BOJ_16236 {
 
     public static int N;
+    public static int TIME;
     public static int[][] map;
-    public static int[][] atable;
+    public static boolean[][] visited;
 
     private static Queue<int[]> q;
 
@@ -27,7 +28,7 @@ public class BOJ_16236 {
         N = Integer.parseInt(br.readLine());
 
         map    = new int[N+1][N+1];
-        atable = new int[N+1][N+1];
+        visited = new boolean[N+1][N+1];
 
         for(int i = 0; i < N; i++) {
             st = new StringTokenizer(br.readLine());
@@ -38,47 +39,77 @@ public class BOJ_16236 {
                 if(map[i][j] == 9) {
                     babyShark.x = i;
                     babyShark.y = j;
+                    map[i][j] = 0;
                 }
             }
         }
-        System.out.println(targeting(babyShark));
 
         br.close();
 
-        bfs(babyShark);
+        //targeting(babyShark);
+
+        while (targeting(babyShark)) {
+            TIME += bfs(babyShark);
+        }
+
+        System.out.println(TIME);
     }
 
-    public static void bfs(BabyShark babyShark) {
+    public static int bfs(BabyShark babyShark) {
         q = new LinkedList<>();
-        q.add(new int[] {babyShark.x, babyShark.y});
+        q.add(new int[] {babyShark.x, babyShark.y, 0});
 
+        TIME = 0;
         while (!q.isEmpty()) {
             int nx = q.peek()[0];
             int ny = q.peek()[1];
+            int cnt = q.peek()[2];
 
             q.poll();
+
             for(int i = 0; i < 4; i++) {
+
                 int curx = nx + dx[i];
                 int cury = ny + dy[i];
+                int curc = cnt + 1;
 
                 if(curx < 0 || cury < 0 || curx > N || cury > N) continue;
 
                 if(map[curx][cury] > babyShark.height) continue;
+
+                if(curx == babyShark.targetX && cury == babyShark.targetY) {
+                    babyShark.eat();
+                    map[curx][cury] = 0;
+
+                    babyShark.x = curx;
+                    babyShark.y = cury;
+                    babyShark.targetD = 1000;
+
+                    visited[curx][cury] = true;
+                    return curc;
+                }
+
+                if(map[curx][cury] == 0 || map[curx][cury] == babyShark.height) {
+                    q.add(new int[] {curx, cury, curc});
+                }
             }
         }
+        return 0;
     }
 
     public static boolean targeting(BabyShark shark) {
+        boolean result = false;
+
         for(int i = 0; i < N; i++) {
             for(int j = 0; j < N; j++) {
-                if(map[i][j] < shark.height && map[i][j] != 0) {
+                if(!visited[i][j] && map[i][j] < shark.height && map[i][j] != 0) {
                     shark.think(i, j);
-                    return true;
+                    result = true;
                 }
             }
         }
 
-        return false;
+        return result;
     }
 
 
@@ -91,6 +122,14 @@ public class BOJ_16236 {
         public int targetX = 21;
         public int targetY = 21;
         public int targetD = 1000;
+
+        public void eat() {
+            cnt++;
+            if(height == cnt) {
+                cnt = 0;
+                height++;
+            }
+        }
 
 
         public void think(int i, int j) {
@@ -105,10 +144,10 @@ public class BOJ_16236 {
         }
 
         public void process(int i, int j) {
-            if (targetX < i) {
+            if (targetX > i) {
                 targetX = i;
                 targetY = j;
-            } else if ( targetX == i && (targetY > j)) {
+            } else if ( targetY > j) {
                 targetY = j;
             }
         }
