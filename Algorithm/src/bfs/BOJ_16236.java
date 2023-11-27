@@ -79,11 +79,11 @@ public class BOJ_16236 {
                     int ny = curF.y + dy[i];
 
                     if (nx < 0 || ny < 0 || nx >= N || ny >= N ||
-                        visited[nx][ny] || map[nx][ny] > shark.size) {
+                        visited[nx][ny] || map[nx][ny] > curF.size) {
                         continue;
                     }
 
-                    if (map[nx][ny] < shark.size && map[nx][ny] != 0) {
+                    if (map[nx][ny] < curF.size && map[nx][ny] != 0) {
                         que.offer(new Fish(nx, ny, curF.size, curF.eatCnt + 1, curF.time + 1));
                     }
 
@@ -105,9 +105,6 @@ public class BOJ_16236 {
 
             map[fish.x][fish.y] = 0;
             TIME += fish.time;
-
-            System.out.println(fish.x + " " + fish.y);
-            System.out.println("size : " + fish.size + " eatCnt : " + fish.eatCnt);
 
             q.offer(new Fish(fish.x, fish.y, fish.size, fish.eatCnt, 0));
             que.clear();
