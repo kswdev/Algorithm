@@ -41,10 +41,18 @@ public class BOJ_1707 {
                 list.get(i).get(a).add(b);
                 list.get(i).get(b).add(a);
             }
-
-
         }
 
-        System.out.println(list.toString());
+        System.out.println(list.get(0));
+        System.out.println(list.get(1));
+
+        dfs(list.get(0), 0);
+    }
+
+    public static void dfs(ArrayList<ArrayList<Integer>> arrayLists, int d) {
+        if (arrayLists.size() == d) {
+
+            return;
+        }
     }
 }
