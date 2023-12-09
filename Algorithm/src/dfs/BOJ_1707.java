@@ -8,24 +8,29 @@ import java.util.*;
 public class BOJ_1707 {
 
     private static int testCaseCnt;
-    private static List<ArrayList<ArrayList<Integer>>> list;
+    private static ArrayList<ArrayList<Integer>> list;
+    private static int[] top;
+    private static boolean result;
+    private static List<Boolean> answers;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         testCaseCnt = Integer.parseInt(br.readLine());
-
-        list = new ArrayList<>();
+        answers = new ArrayList<>();
 
         for (int i = 0; i < testCaseCnt; i++) {
-            StringTokenizer st = new StringTokenizer(br.readLine());
+            result = false;
+            list = new ArrayList<>();
 
-            list.add(new ArrayList<>());
+            StringTokenizer st = new StringTokenizer(br.readLine());
 
             int topNum = Integer.parseInt(st.nextToken());
 
+            top = new int[topNum + 1];
+
             for (int k = 0; k <= topNum; k++) {
-                list.get(i).add(new ArrayList<>());
+                list.add(new ArrayList<>());
             }
 
             int relativeNum = Integer.parseInt(st.nextToken());
@@ -38,21 +43,43 @@ public class BOJ_1707 {
 
                 System.out.println("a : " + a + " b: " + b);
 
-                list.get(i).get(a).add(b);
-                list.get(i).get(b).add(a);
+                list.get(a).add(b);
+                list.get(b).add(a);
+            }
+
+            for (int k = 1; k < list.size(); k++) {
+                if(top[k] == 0) {
+                    dfs(k, 1);
+                }
+            }
+
+            if(result) {
+                answers.add(Boolean.FALSE);
+            } else {
+                answers.add(Boolean.TRUE);
             }
         }
 
-        System.out.println(list.get(0));
-        System.out.println(list.get(1));
-
-        dfs(list.get(0), 0);
+        answers.forEach(answer -> {
+            if(Boolean.FALSE.equals(answer)) System.out.println("NO");
+            else System.out.println("YES");
+        });
     }
 
-    public static void dfs(ArrayList<ArrayList<Integer>> arrayLists, int d) {
-        if (arrayLists.size() == d) {
+    public static void dfs(int parent, int flag) {
 
-            return;
+        top[parent] = flag;
+        List<Integer> childList = list.get(parent);
+
+        for (int child : childList) {
+            if (top[child] == flag) {
+                result = true;
+                return;
+            }
+
+            if(top[child] == 0) {
+                dfs(child, flag * -1);
+            }
         }
     }
 }
