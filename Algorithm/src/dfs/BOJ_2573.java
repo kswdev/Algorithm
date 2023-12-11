@@ -12,8 +12,6 @@ public class BOJ_2573 {
 
     private static int N, M;
     private static int[][] map;
-    private static List<int[][]> day;
-    private static Queue<int[]> q;
     private static boolean[][] visited;
 
     public static void main(String[] args) throws IOException {
@@ -24,7 +22,6 @@ public class BOJ_2573 {
         M = Integer.parseInt(st.nextToken());
 
         map = new int[N+1][M+1];
-        day = new ArrayList<>();
 
         visited = new boolean[N+1][M+1];
 
@@ -35,26 +32,50 @@ public class BOJ_2573 {
             }
         }
 
-        System.out.println(seperate());
+        int seperate;
+        int day = 0;
+        while ((seperate = seperate()) == 1) {
+
+            visited = new boolean[N+1][M+1];
+
+            for (int i = 0; i < N; i++) {
+                for (int j = 0; j < M; j++) {
+                    if (!visited[i][j] && map[i][j] != 0) {
+                        visited[i][j] = true;
+                        meltGlacier(i, j);
+                    }
+                }
+            }
+
+            day++;
+        }
+
+        if(seperate != 0) {
+            System.out.println(day);
+        } else {
+            System.out.println(0);
+        }
     }
 
-    public static void bfs(int x, int y) {
-        q = new LinkedList<>();
-        q.add(new int[] {x, y});
+    public static void meltGlacier(int x, int y) {
 
-        while (!q.isEmpty()) {
-            int nx = q.peek()[0];
-            int ny = q.peek()[1];
+        int height = map[x][y];
 
-            q.poll();
+        for (int k = 0; k < 4; k++) {
+            int curx = x + dx[k];
+            int cury = y + dy[k];
 
-            for (int k = 0; k < 4; k++) {
-                int curx = nx + dx[k];
-                int cury = ny + dy[k];
+            if (curx < 0 || cury < 0 || curx >= N || cury >= M ||
+                map[curx][cury] != 0 || visited[curx][cury]) continue;
 
-
+            if (height == 1) {
+                map[x][y] = 0;
+                return;
+            } else {
+                height--;
             }
         }
+        map[x][y] = height;
     }
 
     public static int seperate() {
