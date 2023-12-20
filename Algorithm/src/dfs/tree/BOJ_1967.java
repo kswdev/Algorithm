@@ -9,15 +9,15 @@ import java.util.StringTokenizer;
 
 public class BOJ_1967 {
     private static int V;
+    private static int max;
+    private static int endPoint;
     private static List<List<Node>> list;
     private static boolean[] visited;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         V = Integer.parseInt(br.readLine());
-
-
-        list    = new ArrayList<>();
+        list = new ArrayList<>();
 
         StringTokenizer st;
 
@@ -25,7 +25,7 @@ public class BOJ_1967 {
             list.add(new ArrayList<>());
         }
 
-        for (int i = 0; i <= V; i++) {
+        for (int i = 1; i < V; i++) {
             st = new StringTokenizer(br.readLine());
 
             int start  = Integer.parseInt(st.nextToken());
@@ -38,10 +38,27 @@ public class BOJ_1967 {
 
         visited = new boolean[V+1];
         dfs(1, 0);
+
+        visited = new boolean[V+1];
+        dfs(endPoint, 0);
+
+        System.out.println(max);
     }
 
     private static void dfs(int start, int cost) {
+        visited[start] = true;
 
+        if (cost > max) {
+            max = cost;
+            endPoint = start;
+        }
+
+        List<Node> childList = list.get(start);
+
+        for (Node child : childList) {
+            if (visited[child.end]) continue;
+            dfs(child.end, cost + child.cost);
+        }
     }
 
     private static class Node {
@@ -51,14 +68,6 @@ public class BOJ_1967 {
         public Node(int end, int cost) {
             this.end = end;
             this.cost = cost;
-        }
-
-        public int getEnd() {
-            return end;
-        }
-
-        public int getCost() {
-            return cost;
         }
     }
 }
