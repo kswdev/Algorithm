@@ -20,8 +20,7 @@ public class BOJ_14502 {
 	
 	
 	private static int[][] map;
-	
-	//±Ì¿∫ ∫πªÁ æË¿∫ ∫πªÁ
+
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		
@@ -67,7 +66,7 @@ public class BOJ_14502 {
 	
 	public static void bfs() {
 		
-		q = new LinkedList<int[]>();
+		q = new LinkedList<>();
 		int[][] cMap = new int[a][b];
 		for(int i = 0; i < a; i++) {
 			cMap[i] = map[i].clone();
@@ -104,7 +103,7 @@ public class BOJ_14502 {
 				if(cMap[i][j] == 0) count++;
 			}
 		}
-		//System.out.println(count + "ƒ´øÓ∆Æ");
+		//System.out.println(count + "ƒ´ÔøΩÔøΩ∆Æ");
 		result = Math.max(count, result);
 	}
 }
