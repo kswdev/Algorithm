@@ -19,7 +19,7 @@ public class BOJ_1753 {
         E = Integer.parseInt(st.nextToken());
         K = Integer.parseInt(br.readLine());
 
-        for (int i = 0; i <= E; i++) {
+        for (int i = 0; i <= V; i++) {
             list.add(new ArrayList<>());
         }
 
@@ -31,10 +31,10 @@ public class BOJ_1753 {
             st = new StringTokenizer(br.readLine());
 
             int start = Integer.parseInt(st.nextToken());
-            int end   = Integer.parseInt(st.nextToken());
+            int top   = Integer.parseInt(st.nextToken());
             int w     = Integer.parseInt(st.nextToken());
 
-            list.get(start).add(new Node(end, w));
+            list.get(start).add(new Node(top, w));
         }
         dijkstra(K);
 
@@ -54,20 +54,20 @@ public class BOJ_1753 {
         while (!pq.isEmpty()) {
             Node now = pq.poll();
 
-            for (Node next : list.get(now.end)) {
-                if (dist[next.end] > now.weight + next.weight) {
-                    dist[next.end] = now.weight + next.weight;
-                    pq.add(new Node(next.end, dist[next.end]));
+            for (Node next : list.get(now.top)) {
+                if (dist[next.top] > now.weight + next.weight) {
+                    dist[next.top] = now.weight + next.weight;
+                    pq.add(new Node(next.top, dist[next.top]));
                 }
             }
         }
     }
 
     private static class Node implements Comparable<Node>{
-        int end, weight;
+        int top, weight;
 
-        public Node(int end, int weight){
-            this.end = end;
+        public Node(int top, int weight){
+            this.top = top;
             this.weight = weight;
         }
 
