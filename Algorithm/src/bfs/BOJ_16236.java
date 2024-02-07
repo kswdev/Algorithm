@@ -58,7 +58,7 @@ public class BOJ_16236 {
     }
 
 
-    public static void bfs(Fish shark) {
+    private static void bfs(Fish shark) {
 
         Queue<Fish> que = new PriorityQueue<>(Comparator
                 .comparingInt((Fish f) -> f.time)
@@ -111,7 +111,7 @@ public class BOJ_16236 {
         }
     }
 
-    public static class Fish {
+    private static class Fish {
         int x;
         int y;
         int size;

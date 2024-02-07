@@ -1,4 +1,4 @@
-package bfs;
+package bfs.not_solved;
 
 import java.io.BufferedReader;
 import java.io.IOException;

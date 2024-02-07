@@ -47,8 +47,8 @@ public class BOJ_2667 {
 			System.out.println(i);
 		}
 	}
-	
-	public static void bfs(int x, int y, int num) {
+
+	private static void bfs(int x, int y, int num) {
 		apartNum = 1;
 		
 		q = new LinkedList<>();

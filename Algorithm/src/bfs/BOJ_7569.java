@@ -46,7 +46,7 @@ public class BOJ_7569 {
 		}
 		bfs();
 	}
-	public static void bfs() {
+	private static void bfs() {
 		int max = 1;
 		while(!q.isEmpty()) {
 			int nz = q.peek()[0];

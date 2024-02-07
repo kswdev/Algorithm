@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -57,7 +56,7 @@ public class BOJ_24445 {
 			System.out.println(visited[i]);
 		}
 	}
-	public static void bfs(int R) {
+	private static void bfs(int R) {
 		visited[R] = cnt++;
 		q.offer(R);
 		while(!q.isEmpty()) {

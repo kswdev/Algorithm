@@ -45,7 +45,7 @@ public class BOJ_2606 {
 		bfs(1);
 		System.out.println(cnt-1);
 	}
-	public static void bfs(int R) {
+	private static void bfs(int R) {
 		cnt = 0;
 		visited[R] = ++cnt;
 		q.offer(R);

@@ -77,7 +77,7 @@ public class BOJ_16234 {
         br.close();
     }
 
-    public static Queue<int []> bfs(int x, int y) {
+    private static Queue<int []> bfs(int x, int y) {
 
         Queue<int []> uni = new LinkedList<>();
 
@@ -114,7 +114,7 @@ public class BOJ_16234 {
 
         return uni;
     }
-    public static boolean isOpen(int a, int b) {
+    private static boolean isOpen(int a, int b) {
         int diff = Math.abs(a-b);
         return (L <= diff) && (diff <= R);
     }
