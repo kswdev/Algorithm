@@ -16,9 +16,8 @@ public class BOJ_3055 {
     private static int[][] map;
     private static int[][] water;
     private static Location start;
-    private static Location seed;
     private static Location cave;
-    private static Queue<Location> queue;
+    private static Queue<Location> queue = new LinkedList<>();
 
 
     public static void main(String[] args) throws IOException {
@@ -42,10 +41,12 @@ public class BOJ_3055 {
             }
         }
 
-        bfs(start);
+        Location result = bfs(start);
+        if (result.count == 0) System.out.println("KAKTUS");
+        else System.out.println(result.count);
     }
 
-    private static void bfs(Location location) {
+    private static Location bfs(Location location) {
         Queue<Location> locQueue = new LinkedList<>();
         locQueue.add(location);
 
@@ -54,31 +55,49 @@ public class BOJ_3055 {
 
             int curx = cur.x;
             int cury = cur.y;
+            int curCount = cur.count;
 
-            flood();
+            if (cur.equals(cave)) return cur;
+
+            flood(queue.size());
 
             for (int i = 0; i < 4; i++) {
+                int nx = curx + dx[i];
+                int ny = cury + dy[i];
 
+                if (nx >= 0 && ny >= 0 && nx < R && ny < C) {
+                    if (map[nx][ny] == 'X' || water[nx][ny] == 1) continue;
+
+                    locQueue.add(new Location(nx, ny, curCount+1));
+                }
             }
         }
+
+        return new Location(0, 0, 0);
     }
 
-    private static void flood() {
-        Location waterFlood = queue.poll();
+    private static void flood(int size) {
 
-        int wx = waterFlood.x;
-        int wy = waterFlood.y;
+        for (int k = 0; k < size; k++) {
 
-        water[wx][wy] = 1;
+            Location waterFlood = queue.poll();
 
-        for (int i = 0; i < 4; i++) {
-            wx += dx[i];
-            wy += dy[i];
+            assert waterFlood != null;
 
-            if (wx >= 0 && wy >= 0 && wx < R && wy < C) {
-                if (map[wx][wy] == 'D' || map[wx][wy] == 'X') continue;
+            int wx = waterFlood.x;
+            int wy = waterFlood.y;
 
-                queue.add(new Location(wx, wy));
+            water[wx][wy] = 1;
+
+            for (int i = 0; i < 4; i++) {
+                int nX = wx + dx[i];
+                int nY = wy + dy[i];
+
+                if (nX >= 0 && nY >= 0 && nX < R && nY < C) {
+                    if (map[nX][nY] == 'D' || map[nX][nY] == 'X' || water[nX][nY] == 1) continue;
+
+                    queue.add(new Location(nX, nY));
+                }
             }
         }
     }
@@ -102,7 +121,8 @@ public class BOJ_3055 {
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
-            if (!(o instanceof Location location)) return false;
+            if (!(o instanceof Location)) return false;
+            Location location = (Location) o;
             return x == location.x && y == location.y;
         }
 
