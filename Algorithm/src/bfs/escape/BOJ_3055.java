@@ -14,6 +14,7 @@ public class BOJ_3055 {
     private static int[] dx = {1, -1, 0, 0};
     private static int[] dy = {0, 0, 1, -1};
     private static int[][] map;
+    private static boolean[][] visited;
     private static int[][] water;
     private static Location start;
     private static Location cave;
@@ -29,6 +30,7 @@ public class BOJ_3055 {
 
         map   = new int[R][C];
         water = new int[R][C];
+        visited = new boolean[R][C];
 
         for (int i = 0; i < R; i++) {
             String row = br.readLine();
@@ -51,24 +53,28 @@ public class BOJ_3055 {
         locQueue.add(location);
 
         while (!locQueue.isEmpty()) {
-            Location cur = locQueue.poll();
-
-            int curx = cur.x;
-            int cury = cur.y;
-            int curCount = cur.count;
-
-            if (cur.equals(cave)) return cur;
-
             flood(queue.size());
 
-            for (int i = 0; i < 4; i++) {
-                int nx = curx + dx[i];
-                int ny = cury + dy[i];
+            for (int k = 0; k < locQueue.size(); k++) {
 
-                if (nx >= 0 && ny >= 0 && nx < R && ny < C) {
-                    if (map[nx][ny] == 'X' || water[nx][ny] == 1) continue;
+                Location cur = locQueue.poll();
 
-                    locQueue.add(new Location(nx, ny, curCount+1));
+                int curx = cur.x;
+                int cury = cur.y;
+                int curCount = cur.count;
+
+                if (cur.equals(cave)) return cur;
+
+                for (int i = 0; i < 4; i++) {
+                    int nx = curx + dx[i];
+                    int ny = cury + dy[i];
+
+                    if (nx >= 0 && ny >= 0 && nx < R && ny < C && !visited[nx][ny]) {
+                        if (map[nx][ny] == 'X' || water[nx][ny] == 1) continue;
+
+                        visited[nx][ny] = true;
+                        locQueue.add(new Location(nx, ny, curCount+1));
+                    }
                 }
             }
         }
@@ -95,7 +101,7 @@ public class BOJ_3055 {
 
                 if (nX >= 0 && nY >= 0 && nX < R && nY < C) {
                     if (map[nX][nY] == 'D' || map[nX][nY] == 'X' || water[nX][nY] == 1) continue;
-
+                    water[nX][nY] = 1;
                     queue.add(new Location(nX, nY));
                 }
             }
