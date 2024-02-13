@@ -1,4 +1,4 @@
-package dfs;
+package dfs.common;
 
 import java.io.*;
 import java.util.StringTokenizer;
