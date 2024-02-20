@@ -38,9 +38,8 @@ public class BOJ_9466 {
             hasTeam = new boolean[test1.length+1];
             visited = new boolean[test1.length+1];
 
-            for (int i = 1; i < test1.length; i++) {
-                if (!hasTeam[i]) dfs(i, i, k);
-            }
+            for (int i = 1; i < test1.length; i++)
+                if (!hasTeam[i]) dfs(i, i, k, 0);
 
             int count = 0;
 
@@ -51,19 +50,26 @@ public class BOJ_9466 {
         }
     }
 
-    private static void dfs(int start, int end, int k) {
+    private static void dfs(int start, int end, int k, int depth) {
         int[] test1 = partners.get(k);
 
         if (test1[start] == end) {
-            hasTeam[end] = true;
-            System.out.println(end);
+            teamChk(end, 0, depth, test1);
             return;
         }
 
         if (!visited[start]) {
             visited[start] = true;
-            dfs(test1[start], end, k);
+            dfs(test1[start], end, k, depth+1);
             visited[start] = false;
+        }
+    }
+
+    private static void teamChk(int s, int cnt, int depth, int[] test) {
+        hasTeam[s] = true;
+
+        if (cnt < depth) {
+            teamChk(test[s], cnt+1, depth, test);
         }
     }
 }
