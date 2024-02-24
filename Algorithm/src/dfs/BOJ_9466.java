@@ -3,15 +3,14 @@ package dfs;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.StringTokenizer;
 
 public class BOJ_9466 {
 
-    private static int T;
-    private static List<int []> partners = new ArrayList<>();
+    private static int T, count;
+    private static int [] partner;
     private static boolean[] hasTeam;
+    private static boolean[] checkedNotHasTeam;
     private static boolean[] visited;
 
     public static void main(String[] args) throws IOException {
@@ -21,7 +20,7 @@ public class BOJ_9466 {
 
         for (int i = 0; i < T; i++) {
             int n = Integer.parseInt(br.readLine());
-            int[] partner = new int[n+1];
+            partner = new int[n+1];
 
             StringTokenizer st = new StringTokenizer(br.readLine());
 
@@ -29,47 +28,41 @@ public class BOJ_9466 {
                 partner[j] = Integer.parseInt(st.nextToken());
             }
 
-            partners.add(partner);
-        }
+            hasTeam = new boolean[partner.length+1];
+            visited = new boolean[partner.length+1];
+            checkedNotHasTeam = new boolean[partner.length+1];
 
-        for (int k = 0; k < partners.size(); k++) {
-            int[] test1 = partners.get(k);
+            count = 0;
 
-            hasTeam = new boolean[test1.length+1];
-            visited = new boolean[test1.length+1];
+            for (int j = 1; j < partner.length; j++) {
+                if (!hasTeam[j]) dfs(j);
+            }
 
-            for (int i = 1; i < test1.length; i++)
-                if (!hasTeam[i]) dfs(i, i, k, 0);
-
-            int count = 0;
-
-            for (int i = 1; i < test1.length; i++)
-                if (!hasTeam[i]) count++;
-
-            System.out.println(count);
+            System.out.println(partner.length - count - 1);
         }
     }
 
-    private static void dfs(int start, int end, int k, int depth) {
-        int[] test1 = partners.get(k);
+    private static void dfs(int start) {
 
-        if (test1[start] == end) {
-            teamChk(end, 0, depth, test1);
+        if (visited[start]) {
+            teamChk(start, start, 0);
             return;
         }
 
-        if (!visited[start]) {
+        if (!checkedNotHasTeam[start] && !hasTeam[partner[start]]) {
             visited[start] = true;
-            dfs(test1[start], end, k, depth+1);
+            checkedNotHasTeam[start] = true;
+            dfs(partner[start]);
             visited[start] = false;
         }
     }
 
-    private static void teamChk(int s, int cnt, int depth, int[] test) {
+    private static void teamChk(int s, int e, int cnt) {
         hasTeam[s] = true;
-
-        if (cnt < depth) {
-            teamChk(test[s], cnt+1, depth, test);
+        checkedNotHasTeam[s] = false;
+        count++;
+        if (partner[s] != e) {
+            teamChk(partner[s], e, cnt+1);
         }
     }
 }
