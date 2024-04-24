@@ -42,7 +42,7 @@ public class BOJ_2638_melting_cheese {
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < M; j++) {
 
-                if (cheeseMap[i][j]) {
+                /*if (cheeseMap[i][j]) {*/
                     airCheck();
 
                     visited = new boolean[N][M];
@@ -52,7 +52,7 @@ public class BOJ_2638_melting_cheese {
                         dfs(i, j);
                         hour++;
                     }
-                }
+                //}
             }
         }
 
