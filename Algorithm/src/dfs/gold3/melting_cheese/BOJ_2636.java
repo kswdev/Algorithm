@@ -3,7 +3,6 @@ package dfs.gold3.melting_cheese;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.StringTokenizer;
@@ -59,11 +58,6 @@ public class BOJ_2636 {
 
                 map[currentX][currentY] = 9;
             }
-
-            for (int i = 0; i < map.length; i++)
-                System.out.println((Arrays.toString(map[i])));
-
-            System.out.println("***********************************");
         }
 
         System.out.println(time);
