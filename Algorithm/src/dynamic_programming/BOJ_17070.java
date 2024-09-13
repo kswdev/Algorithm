@@ -3,7 +3,6 @@ package dynamic_programming;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 
 public class BOJ_17070 {
 
@@ -30,35 +29,41 @@ public class BOJ_17070 {
                 dp[i][j] = countPreviousMethods(i, j);
             }
         }
-        //System.out.println(dp[N][N]);
-
-        for (int i = 0; i <= N; i++) {
-            System.out.println("");
-            for (int j = 0; j <= N; j++)
-                System.out.print(dp[i][j] + " ");
-        }
+        if (dp[N][N] == -1) System.out.println(0);
+        else System.out.println(dp[N][N]);
 
     }
 
     private static int countPreviousMethods(int i, int j) {
-        if (i == 1 && j == 2) return 1;
+        if (i == 1 && j >= 2)
+            return firstRow(j);
+
         return countRightward(i, j) + countDownward(i, j) + countDiagonal(i, j);
     }
 
+    private static int firstRow(int x) {
+
+        for (int i = 2; i < x; i++)
+            if (isWall(1, i))
+                return 0;
+
+        return 1;
+    }
+
     private static int countDiagonal(int i, int j) {
-        if (dp[i-1][j] == -1 || dp[i][j-1] == -1 || dp[i-1][j-1] == -1) return 0;
+        if (isWall(i-1, j) || isWall(i, j-1) || isWall(i-1, j-1)) return 0;
         return dp[i-1][j-1];
     }
 
     private static int countRightward(int i, int j) {
-        if (dp[i][j-1] == -1)
+        if (isWall(i, j-1))
             return 0;
         else
             return sumDpRowBefore(i-1, j-1);
     }
 
     private static int countDownward(int i, int j) {
-        if (dp[i-1][j] == -1)
+        if (isWall(i-1, j))
             return 0;
         else
             return sumDpColumnBefore(i-1, j-1);
@@ -68,7 +73,10 @@ public class BOJ_17070 {
         int sum = 0;
 
         for (int j = 1; j < x; j++)
-            sum += dp[y][j];
+            if (isWall(y+1, j))
+                sum = 0;
+            else if (!isWall(y, j+1) && !isWall(y, j))
+                sum += dp[y][j];
 
         return sum;
     }
@@ -77,8 +85,15 @@ public class BOJ_17070 {
         int sum = 0;
 
         for (int i = 1; i < y; i++)
-            sum += dp[i][x];
+            if (isWall(i, x+1))
+                sum = 0;
+            else if (!isWall(i+1, x) && !isWall(i, x))
+                sum += dp[i][x];
 
         return sum;
+    }
+
+    private static boolean isWall(int i, int j) {
+        return dp[i][j] == -1;
     }
 }
