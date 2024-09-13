@@ -38,7 +38,7 @@ public class BOJ_17070 {
         if (i == 1 && j >= 2)
             return firstRow(j);
 
-        return countRightward(i, j) + countDownward(i, j) + countDiagonal(i, j);
+        return countRightward(i, j) + countDownward(i, j) - countDiagonal(i, j);
     }
 
     private static int firstRow(int x) {
@@ -56,23 +56,17 @@ public class BOJ_17070 {
     }
 
     private static int countRightward(int i, int j) {
-        if (isWall(i, j-1))
-            return 0;
-        else
-            return sumDpRowBefore(i-1, j-1);
+        return sumDpRowBefore(i-1, j-1);
     }
 
     private static int countDownward(int i, int j) {
-        if (isWall(i-1, j))
-            return 0;
-        else
-            return sumDpColumnBefore(i-1, j-1);
+        return sumDpColumnBefore(i-1, j-1);
     }
 
     private static int sumDpRowBefore(int y , int x) {
         int sum = 0;
 
-        for (int j = 1; j < x; j++)
+        for (int j = 1; j <= x; j++)
             if (isWall(y+1, j))
                 sum = 0;
             else if (!isWall(y, j+1) && !isWall(y, j))
@@ -84,7 +78,7 @@ public class BOJ_17070 {
     private static int sumDpColumnBefore(int y, int x) {
         int sum = 0;
 
-        for (int i = 1; i < y; i++)
+        for (int i = 1; i <= y; i++)
             if (isWall(i, x+1))
                 sum = 0;
             else if (!isWall(i+1, x) && !isWall(i, x))
