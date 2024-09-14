@@ -31,7 +31,6 @@ public class BOJ_17070 {
         }
         if (dp[N][N] == -1) System.out.println(0);
         else System.out.println(dp[N][N]);
-
     }
 
     private static int countPreviousMethods(int i, int j) {
