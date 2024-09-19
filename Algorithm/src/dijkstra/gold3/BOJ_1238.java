@@ -55,6 +55,7 @@ public class BOJ_1238 {
         System.out.println(max);
     }
 
+
     private static void foundShortestBackTime() {
         Queue<Node> queue = new PriorityQueue<>();
         back[X] = 0;
