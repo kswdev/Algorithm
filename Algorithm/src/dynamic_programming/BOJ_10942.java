@@ -48,7 +48,6 @@ public class BOJ_10942 {
                     return 0;
             }
         } else {
-
         }
 
         return 1;
