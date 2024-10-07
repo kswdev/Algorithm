@@ -12,7 +12,7 @@ public class BOJ_10942 {
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
+        StringBuilder sb = new StringBuilder();
         int N = Integer.parseInt(br.readLine());
         num = new int[N+1];
         dp = new int[N+1][N+1];
@@ -21,7 +21,25 @@ public class BOJ_10942 {
 
         for (int n = 1; n <= N; n++) {
             num[n] = Integer.parseInt(st.nextToken());
-            dp[n][n] = 1;
+        }
+
+        for (int i = N; i >= 1; i--) {
+            for (int j = i; j <= N; j++) {
+                if (j == i) {
+                    dp[i][j] = 1;
+                } else if (j-i == 1) {
+                    if (num[j-1] == num[j])
+                        dp[i][j] = 1;
+                    else
+                        dp[i][j] = 0;
+                } else {
+                    if ((dp[i+1][j-1] == 1) && num[i] == num[j]) {
+                        dp[i][j] = 1;
+                    } else {
+                        dp[i][j] = 0;
+                    }
+                }
+            }
         }
 
         int M = Integer.parseInt(br.readLine());
@@ -32,33 +50,19 @@ public class BOJ_10942 {
             int s = Integer.parseInt(st.nextToken());
             int e = Integer.parseInt(st.nextToken());
 
-            dp[s][e] = isPalindrome(s, e);
+            sb.append(dp[s][e]).append("\n");
         }
 
-    }
-
-    private static int isPalindrome(int s, int e) {
-        boolean isOdd = (e - s) % 2 == 0;
-
-        if (isOdd) {
-            int pivot = (s + e) / 2;
-
-            for (int i = pivot; i < e; i++) {
-                if (num[pivot-1] != num[pivot+1])
-                    return 0;
-            }
-        } else {
-        }
-
-        return 1;
+        System.out.println(sb);
     }
 }
 /*
 
-1 0 1 0 0 0
-0 1 0 0 0 1
-0 0 1 0 1 0
-0 0 0 1 0 1
-0 0 0 0 1 0
-0 0 0 0 0 1
+1 0 1 0 0 0 1
+0 1 0 0 0 1 0
+0 0 1 0 1 0 0
+0 0 0 1 0 1 0
+0 0 0 0 1 0 1
+0 0 0 0 0 1 0
+0 0 0 0 0 0 1
 */
