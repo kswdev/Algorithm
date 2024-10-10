@@ -1,44 +1,62 @@
 package dynamic_programming.gold3.merge_file;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class BOJ_11066 {
 
-    private static int T, K;
-    private static int[] novelPage;
-    private static int[] dp;
+    private static int[] chapter;
+    private static int[][] dp;
+    private static int[][] sum;
+
     public static void main(String[] args) throws IOException {
         BufferedReader br  = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
+        StringBuilder sb = new StringBuilder();
 
-        //TODO testcase 별로 반복문 추가하기
+        int T = Integer.parseInt(br.readLine());
 
-        K = Integer.parseInt(st.nextToken());
+        for (int t = 0; t < T; t++) {
+            int K = Integer.parseInt(br.readLine());
+            chapter = new int[K+1];
+            dp  = new int[K+1][K+1];
+            sum = new int[K+1][K+1];
 
-        novelPage = new int[K+1];
-        dp        = new int[K+1];
+            StringTokenizer st = new StringTokenizer(br.readLine());
 
-        st = new StringTokenizer(br.readLine());
+            for (int k = 1; k <= K; k++) {
+                chapter[k] = Integer.parseInt(st.nextToken());
+                Arrays.fill(dp[k], Integer.MAX_VALUE);
+            }
 
-        for (int i = 1; i <= K; i++) {
-            novelPage[i] = Integer.parseInt(st.nextToken());
+            for (int i = 1; i <= K; i++) {
+                for (int j = i; j <= K; j++) {
+                    sum[i][j] = sum[i][j-1] + chapter[j];
+                }
+            }
+
+            dp[1][K] = sumPaging(1, K);
+            sb.append(dp[1][K]).append("\n");
         }
 
-        Arrays.sort(novelPage);
-
-        dp[1] = novelPage[1];
-        dp[2] = dp[1] + novelPage[2];
-
+        System.out.println(sb);
+        br.close();
     }
 
-    private static int sumPaging(int page) {
+    private static int sumPaging(int start, int end) {
+        if (start == end)
+            return 0;
+        else if (dp[start][end] != Integer.MAX_VALUE) {
+            return dp[start][end];
+        }
 
-        if (page <= 2) return dp[page];
+        for (int i = start; i < end; i++) {
 
-        return 1;
+            int result = sumPaging(start, i) + sumPaging(i+1, end) + sum[start][end];
+
+            dp[start][end] = Math.min(dp[start][end], result);
+        }
+
+        return dp[start][end];
     }
 }
