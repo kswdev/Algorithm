@@ -1,4 +1,4 @@
-package dynamic_programming;
+package dynamic_programming.gold5.downward;
 
 import java.io.BufferedReader;
 import java.io.IOException;

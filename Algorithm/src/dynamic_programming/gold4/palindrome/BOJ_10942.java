@@ -1,4 +1,4 @@
-package dynamic_programming;
+package dynamic_programming.gold4.palindrome;
 
 import java.io.BufferedReader;
 import java.io.IOException;

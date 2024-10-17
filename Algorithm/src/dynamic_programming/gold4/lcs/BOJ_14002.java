@@ -1,4 +1,4 @@
-package dynamic_programming.lcs;
+package dynamic_programming.gold4.lcs;
 
 import java.io.*;
 import java.util.Arrays;

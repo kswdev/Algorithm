@@ -1,14 +1,16 @@
-package dynamic_programming;
+package dynamic_programming.gold4.coin;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-public class BOJ_2225 {
+public class BOJ_2293 {
 
     private static int N, K;
-    private static int[][] dp;
+    private static int[] coins;
+    private static int[] dp;
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
@@ -16,19 +18,19 @@ public class BOJ_2225 {
         N = Integer.parseInt(st.nextToken());
         K = Integer.parseInt(st.nextToken());
 
-        dp = new int[N+1][K+1];
+        coins = new int[N+1];
+        dp = new int[K+1];
 
-        int result = dynamic(N, K);
-        System.out.println(result);
-    }
+        dp[0] = 1;
 
-    private static int dynamic(int n, int k) {
+        for (int i = 1; i <= N; i++) {
+            coins[i] = Integer.parseInt(br.readLine());
 
-        if (n == 1) return k;
-        if (k == 1) return 1;
+            for (int j = coins[i]; j <= K; j++) {
+                dp[j] += dp[j-coins[i]];
+            }
+        }
 
-        if (dp[n][k] == 0) dp[n][k] = dynamic(n-1, k) + dynamic(n, k-1);
-
-        return dp[n][k]%1000000000;
+        System.out.println(dp[K]);
     }
 }

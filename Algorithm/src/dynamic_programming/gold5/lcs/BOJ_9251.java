@@ -1,4 +1,4 @@
-package dynamic_programming.lcs;
+package dynamic_programming.gold5.lcs;
 
 import java.io.BufferedReader;
 import java.io.IOException;

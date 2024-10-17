@@ -1,4 +1,4 @@
-package dynamic_programming;
+package dynamic_programming.not_solved;
 
 
 import java.io.BufferedReader;

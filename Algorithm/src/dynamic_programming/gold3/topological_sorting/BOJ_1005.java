@@ -1,4 +1,4 @@
-package dynamic_programming.gold3;
+package dynamic_programming.gold3.topological_sorting;
 
 import java.io.*;
 import java.util.*;
