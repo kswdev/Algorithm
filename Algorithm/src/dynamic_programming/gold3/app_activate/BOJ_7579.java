@@ -8,8 +8,10 @@ import java.util.*;
 public class BOJ_7579 {
 
     private static int N, M;
-    private static Queue<App> appQueue = new PriorityQueue<>();
-    private static int[] dp;
+    private static final int INF = 10000001;
+    private static int[] memory;
+    private static int[] activate;
+    private static int[][] dp;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
@@ -17,75 +19,52 @@ public class BOJ_7579 {
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
 
-        dp = new int[M+1];
+        dp = new int[N+1][M+1];
 
-        StringTokenizer memory = new StringTokenizer(br.readLine());
-        StringTokenizer deactivate = new StringTokenizer(br.readLine());
+        memory = new int[N+1];
+        activate = new int[N+1];
+
+        StringTokenizer memoryTokenizer = new StringTokenizer(br.readLine());
+        StringTokenizer activateTokenizer = new StringTokenizer(br.readLine());
 
         for (int i = 1; i <= N; i++) {
-            int appMemory = Integer.parseInt(memory.nextToken());
-            int activate = Integer.parseInt(deactivate.nextToken());
+            int appMemory = Integer.parseInt(memoryTokenizer.nextToken());
+            int appActivate = Integer.parseInt(activateTokenizer.nextToken());
 
-            appQueue.add(new App(appMemory, activate));
+            memory[i] = appMemory;
+            activate[i] = appActivate;
+
+            Arrays.fill(dp[i], INF);
         }
 
-        Arrays.fill(dp, -1);
-        dp[0] = 0;
-
-        while (!appQueue.isEmpty()) {
-            App app = appQueue.poll();
-
-            for (int i = app.getMemory(); dp[i] == -1; i--)
-                dp[i] = app.getActivate();
-        }
-
-        System.out.println(Arrays.toString(dp));
-
-        //System.out.println(solve(M));
+        System.out.println(topDown(N, M));
     }
 
-    private static int solve(int m) {
-        if (dp[m] != -1)
-            return dp[m];
+    private static int topDown(int i, int m) {
 
+        if (i < 1)
+            return INF;
 
+        if (dp[i][m] == INF) {
 
-        return dp[m];
+            if (memory[i] < m) {
+                dp[i][m] = Math.min(topDown(i-1, m-memory[i]) + activate[i], topDown(i-1, m));
+            } else {
+                dp[i][m] = Math.min(topDown(i-1, m), activate[i]);
+            }
+        }
+
+        return dp[i][m];
     }
 
-    private static class App implements Comparable<App> {
-        private int memory;
-        private int activate;
+    private static int bottomUp() {
 
-        public App(int memory, int activate) {
-            this.memory = memory;
-            this.activate = activate;
+        for (int i = 1; i <= N; i++) {
+            for (int j = 1; j <= M; j++) {
+
+            }
         }
 
-        public int getMemory() {
-            return memory;
-        }
-
-        public int getActivate() {
-            return activate;
-        }
-
-        @Override
-        public int compareTo(App app) {
-            return this.getActivate() - app.getActivate();
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            App app = (App) o;
-            return memory == app.memory && activate == app.activate;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(memory, activate);
-        }
+        return dp[N][M];
     }
 }
