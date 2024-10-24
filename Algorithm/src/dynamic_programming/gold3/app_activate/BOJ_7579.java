@@ -7,7 +7,6 @@ import java.util.*;
 
 public class BOJ_7579 {
 
-    private static int N, M;
     private static final int INF = 10000001;
     private static int[] memory;
     private static int[] activate;
@@ -16,55 +15,46 @@ public class BOJ_7579 {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        N = Integer.parseInt(st.nextToken());
-        M = Integer.parseInt(st.nextToken());
+        int n = Integer.parseInt(st.nextToken());
+        int m = Integer.parseInt(st.nextToken());
 
-        dp = new int[N+1][M+1];
+        dp = new int[n + 1][m + 1];
 
-        memory = new int[N+1];
-        activate = new int[N+1];
+        memory = new int[n + 1];
+        activate = new int[10001];
 
         StringTokenizer memoryTokenizer = new StringTokenizer(br.readLine());
         StringTokenizer activateTokenizer = new StringTokenizer(br.readLine());
 
-        for (int i = 1; i <= N; i++) {
+        Arrays.fill(dp[0], INF);
+
+        for (int i = 1; i <= n; i++) {
             int appMemory = Integer.parseInt(memoryTokenizer.nextToken());
             int appActivate = Integer.parseInt(activateTokenizer.nextToken());
 
             memory[i] = appMemory;
             activate[i] = appActivate;
-
-            Arrays.fill(dp[i], INF);
         }
 
-        System.out.println(topDown(N, M));
+        System.out.println(bottomUp(n, m));
     }
 
-    private static int topDown(int i, int m) {
+    private static int bottomUp(int n, int m) {
 
-        if (i < 1)
-            return INF;
+        for (int i = 1; i <= n; i++) {
+            int memoryValue = memory[i];
+            int activateValue = activate[i];
 
-        if (dp[i][m] == INF) {
+            for (int j = 0; j <= 10000; j++) {
 
-            if (memory[i] < m) {
-                dp[i][m] = Math.min(topDown(i-1, m-memory[i]) + activate[i], topDown(i-1, m));
-            } else {
-                dp[i][m] = Math.min(topDown(i-1, m), activate[i]);
+                if (i == 1) {
+                    if (activateValue == 0) dp[i][j] = memoryValue;
+                } else {
+
+                }
             }
         }
 
-        return dp[i][m];
-    }
-
-    private static int bottomUp() {
-
-        for (int i = 1; i <= N; i++) {
-            for (int j = 1; j <= M; j++) {
-
-            }
-        }
-
-        return dp[N][M];
+        return dp[n][m];
     }
 }
