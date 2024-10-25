@@ -47,14 +47,10 @@ public class BOJ_7579 {
 
             for (int j = 0; j <= sum; j++) {
 
-                if (i == 1 && activateValue == 0) {
-                    dp[i][j] = memoryValue;
+                if (activateValue <= j) {
+                    dp[i][j] = Math.max(dp[i-1][j-activateValue] + memoryValue, dp[i-1][j]);
                 } else {
-                    if (activateValue <= j) {
-                        dp[i][j] = Math.max(dp[i-1][j-activateValue] + memoryValue, dp[i-1][j]);
-                    } else {
-                        dp[i][j] = dp[i-1][j];
-                    }
+                    dp[i][j] = dp[i-1][j];
                 }
 
                 if (dp[i][j] >= m) {
