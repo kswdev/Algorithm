@@ -9,18 +9,34 @@ public class BOJ_2011 {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String pwd = br.readLine();
+        int MOD = 1000000;
 
-        int[] dp = new int[pwd.length()];
+        int[] dp = new int[pwd.length()+1];
 
-        for (int i = 0; i < pwd.length(); i++) {
-            int target = Integer.parseInt(pwd.substring(0, i));
+        dp[0] = 1;
+        dp[1] = 1;
 
-            if (i == 0) dp[i] = 1;
-            else {
-                dp[i] = dp[i-1]+1;
-                if (target <= 26) dp[i] += 1;
+        for (int i = 2; i <= pwd.length(); i++) {
+
+            int now = pwd.charAt(i-1) - '0';
+            int prev = pwd.charAt(i-2) - '0';
+
+            if(1 <= now && now <= 9)
+                dp[i] = dp[i-1] % MOD;
+
+            if(prev == 0) continue;
+
+            int value = (prev * 10) + now;
+
+            if(value >= 10 && value <= 26) {
+                dp[i] += dp[i-2] % MOD;
             }
         }
+
+        if (pwd.charAt(0) == '0')
+            System.out.println(0);
+        else
+            System.out.println(dp[pwd.length()] % MOD);
     }
 }
 
