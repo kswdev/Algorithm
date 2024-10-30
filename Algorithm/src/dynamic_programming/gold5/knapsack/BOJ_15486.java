@@ -22,19 +22,28 @@ public class BOJ_15486 {
         time = new int[N+1];
         price = new int[N+1];
 
-        for (int n = 1; n <= N; n++) {
+        int maxValue = 0;
+
+        for (int i = 1; i <= N; i++) {
             st = new StringTokenizer(br.readLine());
 
-            time[n] = Integer.parseInt(st.nextToken());
-            price[n] = Integer.parseInt(st.nextToken());
+            time[i] = Integer.parseInt(st.nextToken());
+            price[i] = Integer.parseInt(st.nextToken());
 
-            for (int i = 1; i <= n; i++) {
-                int requiredDay = time[i];
+            for (int j = 1; j <= i; j++) {
+                int finishedDay = (j-1) + time[j];
 
-                if (requiredDay <= n) {
-
+                if (finishedDay > i) {
+                    dp[j] = dp[j-1];
+                    continue;
                 }
+
+                dp[i] = Math.max(dp[j-1] + price[j], dp[i]);
+
+                if (dp[i] > maxValue) maxValue = dp[i];
             }
         }
+
+        System.out.println(maxValue);
     }
 }
