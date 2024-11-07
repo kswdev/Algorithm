@@ -18,11 +18,11 @@ public class BOJ_15486 {
 
         N = Integer.parseInt(br.readLine());
 
-        dp = new int[N + 1];
-        time = new int[N+1];
-        price = new int[N+1];
+        dp = new int[N+2];
+        time = new int[N+2];
+        price = new int[N+2];
 
-        int maxValue = 0;
+        int max = 0;
 
         for (int i = 1; i <= N; i++) {
             st = new StringTokenizer(br.readLine());
@@ -30,20 +30,15 @@ public class BOJ_15486 {
             time[i] = Integer.parseInt(st.nextToken());
             price[i] = Integer.parseInt(st.nextToken());
 
-            for (int j = 1; j <= i; j++) {
-                int finishedDay = (j-1) + time[j];
+            if (max < dp[i])
+                max = dp[i];
 
-                if (finishedDay > i) {
-                    dp[j] = dp[j-1];
-                    continue;
-                }
+            int finishedDay = i + time[i];
 
-                dp[i] = Math.max(dp[j-1] + price[j], dp[i]);
-
-                if (dp[i] > maxValue) maxValue = dp[i];
-            }
+            if (finishedDay <= N + 1)
+                dp[finishedDay] = Math.max(dp[finishedDay], max + price[i]);
         }
 
-        System.out.println(maxValue);
+        System.out.println(max);
     }
 }
