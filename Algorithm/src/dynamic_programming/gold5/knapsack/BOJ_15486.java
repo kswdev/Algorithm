@@ -29,6 +29,9 @@ public class BOJ_15486 {
 
             time[i] = Integer.parseInt(st.nextToken());
             price[i] = Integer.parseInt(st.nextToken());
+        }
+
+        for (int i = 1; i <= N+1; i++) {
 
             if (max < dp[i])
                 max = dp[i];
