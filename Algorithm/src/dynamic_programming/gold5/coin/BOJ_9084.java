@@ -33,9 +33,11 @@ public class BOJ_9084 {
 
             for (int m = 1; m <= money; m++) {
                 for (int coin : coins) {
-                    if (coin <= m)
+                    if (coin == m)
                         dp[m] += 1;
-
+                    else if (coin < m) {
+                        dp[m] = dp[m-coin] + 1;
+                    }
                 }
             }
         }
@@ -51,5 +53,5 @@ public class BOJ_9084 {
         1 2 3 4 5 6 7 8 9 10
      1  1 1 1 1 1 1 1 1 1 1
      2  1 2 2 3 3 4 4 5 5 6
-     5  1 2 3 4 4 5 5 6 6 7
+     5  1 2 2 3 4 5 5 6 6 8
  */
