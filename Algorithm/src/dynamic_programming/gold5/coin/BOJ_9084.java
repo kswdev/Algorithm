@@ -37,15 +37,14 @@ public class BOJ_9084 {
                 int coin = coins[c];
                 dp[c][0] = 1;
 
-                for (int m = coin; m <= money; m++) {
-                    if (m >= coin) {
+                for (int m = 1; m <= money; m++) {
+                    if (m >= coin)
                         dp[c][m] = dp[c-1][m] + dp[c][m-coin];
-                    } else {
+                    else
                         dp[c][m] = dp[c-1][m];
-                    }
-
-                    value = Math.max(value, dp[c][m]);
                 }
+
+                value = Math.max(value, dp[c][money]);
             }
 
             sb.append(value).append("\n");
