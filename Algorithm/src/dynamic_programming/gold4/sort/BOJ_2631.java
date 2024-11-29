@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 public class BOJ_2631 {
 
     private static int N;
+    private static int max;
     private static int[] children;
     private static int[] dp;
 
@@ -19,22 +20,26 @@ public class BOJ_2631 {
 
         for (int i = 1; i <= N; i++) {
             children[i] = Integer.parseInt(br.readLine());
+            dp[i] = 1;
         }
+
 
         for (int i = 1; i <= N; i++) {
-            for (int j = 1; j <= i; j++) {
-
+            for (int j = 1; j < i; j++) {
+                if (children[i] > children[j])
+                    dp[i] = Math.max(dp[j] + 1, dp[i]);
             }
+            max = Math.max(dp[i], max);
         }
 
-        System.out.println(children.length - dp[N][N]);
+        System.out.println(children.length - (max + 1));
     }
 }
 /*
        3  7  5  2  6  1  4
     3  1
     7     2
-    5        3
+    5        2
     2           1
     6              3
     1                 1
