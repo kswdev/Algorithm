@@ -10,55 +10,41 @@ import java.util.StringTokenizer;
 public class BOJ_2533 {
 
     private static int N;
-    private static List<Friend> friends = new ArrayList<>();
+    private static int[][] dp;
+    private static List<List<Integer>> friends = new ArrayList<>();
+    private static boolean[] visited;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
 
         N = Integer.parseInt(br.readLine());
+        dp = new int[N+1][2];
+        visited = new boolean[N+1];
 
-        for (int i = 1; i <= N; i++) {
-            friends.add(new Friend(i));
+        for (int i = 0; i <= N; i++) {
+            friends.add(new ArrayList<>());
         }
 
-        Friend firstFriend = friends.get(1);
-        firstFriend.setDepth(1);
-
-        for (int i = 1; i <= N; i++) {
+        for (int i = 1; i < N; i++) {
             st = new StringTokenizer(br.readLine());
             int parent = Integer.parseInt(st.nextToken());
             int child  = Integer.parseInt(st.nextToken());
 
+            friends.get(parent).add(child);
+            friends.get(child).add(parent);
         }
 
-
+        dfs(1);
+        System.out.println(Math.min(dp[1][0], dp[1][1]));
     }
 
-    private static class Friend {
-        private int depth;
-        private int num;
-        private int child;
+    private static void dfs(int num) {
+        visited[num] = true;
+        dp[num][0] = 0;
+        dp[num][1] = 1;
 
-        public Friend(int num) {
-            this.num = num;
-        }
 
-        public int getDepth() {
-            return depth;
-        }
-
-        public void setDepth(int depth) {
-            this.depth = depth;
-        }
-
-        public void setChild(int child) {
-            this.child = child;
-        }
-
-        public int getNum() {
-            return num;
-        }
     }
 }
 /**
