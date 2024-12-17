@@ -12,7 +12,7 @@ public class BOJ_2533 {
     private static int N;
     private static int[][] dp;
     private static List<List<Integer>> friends = new ArrayList<>();
-    private static boolean[] visited;
+    private static boolean visited[];
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -39,16 +39,17 @@ public class BOJ_2533 {
         System.out.println(Math.min(dp[1][0], dp[1][1]));
     }
 
-    private static void dfs(int num) {
-        visited[num] = true;
-        dp[num][0] = 0;
-        dp[num][1] = 1;
+    private static void dfs(int parent) {
+        dp[parent][0] = 0;
+        dp[parent][1] = 1;
+        visited[parent] = true;
 
-
+        for (int child : friends.get(parent)) {
+            if (!visited[child]) {
+                dfs(child);
+                dp[parent][0] += dp[child][1];
+                dp[parent][1] += Math.min(dp[child][1], dp[child][0]);
+            }
+        }
     }
 }
-/**
- * 사고
- * 뎁스가 가장 깊은 노드부터 뎁스 크기를 홀/짝으로 구분
- * 홀수 뎁스들의 갯수와 짝수 뎁스들의 갯수를 비교해서 작은 뎁스의 갯수를 구함
- */
