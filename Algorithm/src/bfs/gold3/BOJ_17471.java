@@ -43,7 +43,7 @@ public class BOJ_17471 {
 
         ArrayList<Integer> A = new ArrayList<>();
         for (int i = 1; i <= N / 2; i++) {
-            rule(1, N, i, A); // 조합을 통한 지역 분리.
+            combination(1, N, i, A); // 조합을 통한 지역 분리.
         }
 
         if (min == Integer.MAX_VALUE) {
@@ -53,7 +53,7 @@ public class BOJ_17471 {
         }
     }
 
-    public static void rule(int start, int areaNumber, int depth, List<Integer> A) {
+    public static void combination(int start, int areaNumber, int depth, List<Integer> A) {
         if (depth == 0) {
             gerrymandering(A);
             return;
@@ -61,7 +61,7 @@ public class BOJ_17471 {
 
         for (int i = start; i <= areaNumber; i++) {
             A.add(i);
-            rule(i + 1, areaNumber, depth - 1, A);
+            combination(i + 1, areaNumber, depth - 1, A);
             A.remove(A.size() - 1);
         }
     }
