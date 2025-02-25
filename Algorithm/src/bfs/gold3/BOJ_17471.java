@@ -3,17 +3,13 @@ package bfs.gold3;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class BOJ_17471 {
 
     private static int N;
     private static int min = Integer.MAX_VALUE;
     private static int[] popularity;
-    private static boolean[] visited;
-    private static List<Integer> blue, red = new ArrayList<>();
     private static List<List<Integer>> graph = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
@@ -23,7 +19,6 @@ public class BOJ_17471 {
         N = Integer.parseInt(br.readLine());
 
         popularity = new int[N+1];
-        visited = new boolean[N+1];
 
         for (int i = 0; i <= N; i++) {
             graph.add(new ArrayList<>());
@@ -46,27 +41,83 @@ public class BOJ_17471 {
             }
         }
 
-        int num = minGerrymandering(1, 1);
+        ArrayList<Integer> A = new ArrayList<>();
+        for (int i = 1; i <= N / 2; i++) {
+            rule(1, N, i, A); // 조합을 통한 지역 분리.
+        }
 
-        if (num == Integer.MAX_VALUE) {
+        if (min == Integer.MAX_VALUE) {
             System.out.println(-1);
         } else {
-            System.out.println(num);
+            System.out.println(min);
         }
     }
 
-    private static int minGerrymandering(int area, int depth) {
+    public static void rule(int start, int areaNumber, int depth, List<Integer> A) {
+        if (depth == 0) {
+            gerrymandering(A);
+            return;
+        }
 
-        //모든 요소를 확인했으면 재귀 호출을 그만둔다.
-        if (depth == N) return min;
+        for (int i = start; i <= areaNumber; i++) {
+            A.add(i);
+            rule(i + 1, areaNumber, depth - 1, A);
+            A.remove(A.size() - 1);
+        }
+    }
 
-        //blue에 요소 하나를 넣고 나머지 요소를 red에 넣는다.
-        blue.add(area);
+    public static void gerrymandering(List<Integer> A) {
+        if(!isConnect(A.get(0), A, A.size())) {
+            return;
+        }
 
-        //조건 blue, red 각 선거구가 연결 되있는가?
+        ArrayList<Integer> B = new ArrayList<>();
+        for (int i = 1; i <= N; i++) {
+            if (A.contains(i)) {
+                continue;
+            }
+            B.add(i);
+        }
 
-        //두 선거구의 합 차이의 절댓값을 구한다.
+        if(!isConnect(B.get(0), B, B.size())) {
+            return;
+        }
 
-        return 0;
+        int resultA = 0;
+        int resultB = 0;
+
+        for (Integer value : A) {
+            resultA += popularity[value];
+        }
+
+        // B 지역구 인구 계산
+        for (Integer integer : B) {
+            resultB += popularity[integer];
+        }
+
+        int result = Math.abs(resultA - resultB);
+        min = Math.min(min, result);
+    }
+
+    public static boolean isConnect(int num, List<Integer> arr, int size) {
+        boolean[] visited = new boolean[N + 1];
+        visited[num] = true;
+        Queue<Integer> q = new LinkedList<>();
+        q.offer(num);
+
+        int count = 1;
+        while (!q.isEmpty()) {
+            int start = q.poll();
+
+            for (int i : graph.get(start)) {
+                if (!visited[i] && arr.contains(i)) {
+                    visited[i] = true;
+                    count++;
+                    q.offer(i);
+                }
+            }
+        }
+
+        return count == size;
     }
 }
