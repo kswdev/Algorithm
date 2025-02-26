@@ -1,4 +1,4 @@
-package bfs;
+package bfs.gold._5.hide_seek;
 
 import java.io.BufferedReader;
 import java.io.IOException;

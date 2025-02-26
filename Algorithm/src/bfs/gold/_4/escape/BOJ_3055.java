@@ -1,4 +1,4 @@
-package bfs.escape;
+package bfs.gold._4.escape;
 
 import java.io.BufferedReader;
 import java.io.IOException;

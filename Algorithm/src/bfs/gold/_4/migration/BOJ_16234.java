@@ -1,4 +1,4 @@
-package bfs;
+package bfs.gold._4.migration;
 
 import java.io.*;
 import java.util.LinkedList;

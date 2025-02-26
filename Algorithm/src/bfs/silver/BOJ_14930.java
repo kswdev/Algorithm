@@ -1,4 +1,4 @@
-package bfs;
+package bfs.silver;
 
 import java.io.BufferedReader;
 import java.io.IOException;

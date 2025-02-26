@@ -1,4 +1,4 @@
-package bfs.gold3;
+package bfs.gold._3.gerrymandering;
 
 import java.io.BufferedReader;
 import java.io.IOException;

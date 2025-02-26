@@ -1,4 +1,4 @@
-package bfs;
+package bfs.gold._3.baby_shark;
 
 import java.io.*;
 import java.util.*;

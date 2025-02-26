@@ -1,4 +1,4 @@
-package bfs.hide_and_seak;
+package bfs.gold._4.hide_seek;
 
 import java.io.BufferedReader;
 import java.io.IOException;
