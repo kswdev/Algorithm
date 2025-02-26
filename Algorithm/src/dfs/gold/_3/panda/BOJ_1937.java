@@ -1,4 +1,4 @@
-package dfs.gold3.panda;
+package dfs.gold._3.panda;
 
 import java.io.BufferedReader;
 import java.io.IOException;

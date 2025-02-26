@@ -1,4 +1,4 @@
-package dfs;
+package dfs.gold._3.term_project;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package dfs;
+package dfs.silver;
 
 import java.io.*;
 import java.util.*;

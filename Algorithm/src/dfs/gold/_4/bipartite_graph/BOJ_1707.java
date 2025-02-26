@@ -1,4 +1,4 @@
-package dfs;
+package dfs.gold._4.bipartite_graph;
 
 import java.io.BufferedReader;
 import java.io.IOException;

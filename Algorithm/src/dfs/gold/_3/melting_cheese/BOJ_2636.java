@@ -1,4 +1,4 @@
-package dfs.gold3.melting_cheese;
+package dfs.gold._3.melting_cheese;
 
 import java.io.BufferedReader;
 import java.io.IOException;
