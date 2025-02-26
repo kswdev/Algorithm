@@ -1,4 +1,4 @@
-package dfs.tree;
+package dfs.gold._4.tree;
 
 import java.io.BufferedReader;
 import java.io.IOException;
