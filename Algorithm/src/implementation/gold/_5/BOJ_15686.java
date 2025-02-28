@@ -1,4 +1,4 @@
-package implementation;
+package implementation.gold._5;
 
 import java.io.BufferedReader;
 import java.io.IOException;
