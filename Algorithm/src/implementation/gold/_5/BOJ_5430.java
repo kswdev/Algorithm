@@ -1,7 +1,6 @@
 package implementation.gold._5;
 
 import java.io.*;
-import java.util.Arrays;
 
 public class BOJ_5430 {
 
@@ -16,16 +15,16 @@ public class BOJ_5430 {
             String[] commands = br.readLine().split("");
             int arrLength = Integer.parseInt(br.readLine());
 
-            Deque deque = new Deque();
+            Deque deque = new Deque(arrLength);
             String arrString = br.readLine();
 
             String content = arrString.replaceAll("[\\[\\]]", "");
             String[] split = content.split(",");
 
             for (int j = 0; j < arrLength; j++)
-                deque.offer(Integer.parseInt(split[j]));
+                deque.offerLast(Integer.parseInt(split[j]));
 
-            sb.append(function(commands, deque, arrLength)).append("\n");
+            sb.append(function(commands, deque)).append("\n");
         }
 
         bw.write(sb.toString());
@@ -34,91 +33,54 @@ public class BOJ_5430 {
         br.close();
     }
 
-    private static String function(String[] commands, Deque deque, int arrLength) {
-        Deque temp = new Deque();
+    private static String function(String[] commands, Deque deque) {
 
         for (String command : commands) {
             if (command.equals("R")) {
-                for (int i = 0; i < arrLength; i++)
-                    temp.offer(deque.poll());
+                deque.trigger();
             } else {
-                int num = temp.pollFirst();
+                int num = deque.poll();
                 if (num == -1) return "error";
             }
         }
 
-        return Arrays.toString(temp.array());
+        return deque.toString();
     }
 
     private static class Deque {
-        private static final int DEFAULT_CAPACITY = 1000;
         private int[] arr;
         private int size;
         private int front;
         private int rear;
+        private boolean option = true;
 
-        private Deque() {
-            this.arr = new int[DEFAULT_CAPACITY];
+        private Deque(int length) {
+            this.arr = new int[length];
             this.size = 0;
             this.front = 0;
             this.rear = 0;
         }
 
-        private void resize(int newCapacity) {
-            int arrCapacity = arr.length;
-            int[] newArr = new int[newCapacity];
-
-            for (int i = 0, j = front + 1; i < size; i++, j++) {
-                //원형 큐
-                newArr[i] = arr[j % arrCapacity];
-            }
-
-            this.arr = newArr;
-            front = 0;
-            rear = size;
+        private void offer(int item) {
+            if (option) offerLast(item);
+            else offerFirst(item);
         }
 
-        private boolean offer(int item) {
-            return offerLast(item);
-        }
-
-        private boolean offerLast(int item) {
-            //용적이 찬 경우
-            if ((rear + 1) % arr.length == front) {
-                resize(arr.length * 2);
-            }
-
+        private void offerLast(int item) {
             arr[rear] = item;
             rear = (rear + 1) % arr.length;
             size++;
-
-            return true;
         }
 
-        private boolean offerFirst(int item) {
-            //용적이 찬 경우
-            if (((front - 1) + arr.length) % arr.length == rear) {
-                resize(arr.length * 2);
-            }
-
-            front = ((front - 1) + arr.length) % arr.length;
+        private void offerFirst(int item) {
+            front = (front - 1 + arr.length) % arr.length;
             arr[front] = item;
             size++;
-
-            return true;
         }
 
         private int poll() {
-            return pollLast();
-        }
-
-        private int pollLast() {
-            if (size == 0) return -1;
-            int poll = arr[rear];
-            arr[rear] = 0;
-            rear = ((rear - 1) + arr.length) % arr.length;
-            size--;
-            return poll;
+            if (option) return pollFirst();
+            else return pollLast();
         }
 
         private int pollFirst() {
@@ -127,17 +89,47 @@ public class BOJ_5430 {
             arr[front] = 0;
             front = (front + 1) % arr.length;
             size--;
+
             return poll;
         }
 
-        private int[] array() {
+        private int pollLast() {
+            if (size == 0) return -1;
+            rear = (rear - 1 + arr.length) % arr.length;
+            int poll = arr[rear];
+            size--;
+
+            return poll;
+        }
+
+        @Override
+        public String toString() {
+            if (!option) reverse();
+
+            StringBuilder sb = new StringBuilder();
+
             int arrCapacity = arr.length;
-            int[] newArr = new int[size];
+
+            sb.append("[");
             for (int i = 0, j = front; i < size; i++, j++) {
-                //원형 큐
-                newArr[i] = arr[j % arrCapacity];
+                sb.append(arr[j % arrCapacity]);
+                if (i != size - 1) sb.append(",");
             }
-            return newArr;
+            sb.append("]");
+            return sb.toString();
+        }
+
+        private void reverse() {
+            int temp;
+            for (int i = front, j = rear - 1; i < front + (size / 2); i++, j--) {
+                temp = arr[i % arr.length];
+                arr[i % arr.length] = arr[(j + arr.length) % arr.length];
+                arr[(j + arr.length) % arr.length] = temp;
+            }
+        }
+
+        private void trigger() {
+            option = !option;
         }
     }
 }
