@@ -55,8 +55,7 @@ public class BOJ_14503 {
         }
 
         private void execute() {
-            if (isCleanable()) {
-                clean();
+            if (clean()) {
                 execute();
             } else {
                 if (isPossibleBackward()) {
@@ -66,24 +65,27 @@ public class BOJ_14503 {
             }
         }
 
-        private void clean() {
+        private boolean clean() {
             for (int i = 1; i <= 4; i++) {
-                dir = (4 + (dir - i)) % 4;
-                int[] direction = directions[dir];
+                int TempDir = (4 + (dir - i)) % 4;
+                int[] direction = directions[TempDir];
                 int nx = x + direction[0];
                 int ny = y + direction[1];
 
                 if (nx < 0 || ny < 0 || nx >= N || ny >= M) continue;
 
                 if (!visited[nx][ny] && map[nx][ny] != 1) {
+                    dir = TempDir;
                     visited[nx][ny] = true;
                     count++;
                     x = nx;
                     y = ny;
 
-                    return;
+                    return true;
                 }
             }
+
+            return false;
         }
 
         private void backward() {
@@ -96,22 +98,6 @@ public class BOJ_14503 {
             int by = y + directions[dir][1] * -1;
 
             return bx >= 0 && by >= 0 && bx < N && by < M && map[bx][by] != 1;
-        }
-
-        private boolean isCleanable() {
-            for (int i = 0; i < 4; i++) {
-                int nDir = (4 + (dir - i)) % 4;
-                int[] direction = directions[nDir];
-                int nx = x + direction[0];
-                int ny = y + direction[1];
-
-                if (nx < 0 || ny < 0 || nx >= N || ny >= M) continue;
-
-                if (!visited[nx][ny] && map[nx][ny] != 1) {
-                    return true;
-                }
-            }
-            return false;
         }
     }
 }
@@ -138,12 +124,12 @@ public class BOJ_14503 {
  */
 
 /*
-4 5
-2 2 3
-1 1 1 1 1
-1 0 0 1 1
-1 1 0 0 1
-1 1 1 1 1
+4 6
+1 2 3
+1 1 1 1 1 1
+1 0 0 0 1 1
+1 0 1 0 0 1
+1 1 1 1 1 1
 
 => 4
 
