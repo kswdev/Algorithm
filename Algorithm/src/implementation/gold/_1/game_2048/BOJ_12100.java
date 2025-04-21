@@ -13,110 +13,175 @@ package implementation.gold._1.game_2048;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.List;
 import java.util.StringTokenizer;
 
 public class BOJ_12100 {
 
-    public static void main(String[] args) throws IOException {
+    private static int n;
+    private static int max = 0;
+    private static List<List<Integer>> comb = new ArrayList<>();
 
-        Board board = new Board();
-        board.init();
-        for (int i = 0; i < 4; i++) {
-            System.out.println(Arrays.toString(board.map[i]));
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        n = Integer.parseInt(st.nextToken());
+
+        int[][] map = new int[n+1][n+1];
+        for (int i = 1; i <= n; i++) {
+            st = new StringTokenizer(br.readLine());
+
+            for (int j = 1; j <= n; j++) {
+                map[i][j] = Integer.parseInt(st.nextToken());
+            }
         }
-        board.merge(Board.Direction.UP, 1, 1);
-        System.out.println("============");
-        for (int i = 0; i < 4; i++) {
-            System.out.println(Arrays.toString(board.map[i]));
+
+        move(3, map);
+        for (int i = 1; i <= n; i++) {
+            System.out.println(Arrays.toString(map[i]));
+        }
+        //start(map);
+        //System.out.println(max);
+    }
+
+    private static void start(int[][] board) {
+        combination(5, new ArrayList<>());
+
+
+        for (List<Integer> list : comb) {
+            int[][] copyBoard = copyBoard(board);
+            max = Math.max(game(list, copyBoard), max);
         }
     }
 
-    private static class Board {
+    private static int game(List<Integer> directions, int[][] board) {
 
-        private int[][] map;
-        private int n;
-
-        private void init() throws IOException {
-            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-            StringTokenizer st = new StringTokenizer(br.readLine());
-
-            n = Integer.parseInt(st.nextToken());
-
-            map = new int[n+1][n+1];
-            for (int i = 1; i <= n; i++) {
-                st = new StringTokenizer(br.readLine());
-
-                for (int j = 1; j <= n; j++) {
-                    map[i][j] = Integer.parseInt(st.nextToken());
-                }
-            }
+        for (int dir : directions) {
+            move(dir, board);
         }
 
-        private void merge(Direction direction, int x, int y) {
-            Queue<int []> q = new LinkedList<>();
-            q.add(new int [] {x, y});
-            int dx = direction.getDx();
-            int dy = direction.getDy();
+        return findMax(board);
+    }
 
-            while (!q.isEmpty()) {
-                int [] point = q.poll();
-                int curX = point[0];
-                int curY = point[1];
-
-                for (int k = 0; k < n; k++) {
-                    int newX = curX + dx;
-                    int newY = curY + dy;
-
-                    if (newX <= 0 || newY <= 0 ||
-                        newX > n || newY > n ) continue;
-
-                    compactFrom(direction, curX, curY);
-
-                    if (map[newX][newY] == map[curX][curY]) {
-                        map[curX][curY] += map[newX][newY];
-                        map[newX][newY] = 0;
-                        q.add(new int [] {newX + dx, newY + dy});
-                    } else {
-                        q.add(new int [] {newX, newY});
+    // block : board[index][i] 가 가리키는 요소
+    private static void move(int dir, int[][] board) {
+        switch (dir) {
+            case 0:
+                for (int i = 1; i <= n; i++) {
+                    int block = 0;
+                    int index = 1;
+                    for (int j = 1; j <= n; j++) {
+                        if (board[j][i] != 0) {
+                            if (board[j][i] == block) {
+                                board[index - 1][i] = block * 2;
+                                board[j][i] = 0;
+                                block = 0;
+                            } else {
+                                block = board[j][i];
+                                board[j][i] = 0;
+                                board[index][i] = block;
+                                index++;
+                            }
+                        }
                     }
                 }
-            }
+                break;
+
+            case 1:
+                for (int i = 1; i <= n; i++) {
+                    int block = 0;
+                    int index = n;
+                    for (int j = n; j >= 1; j--) {
+                        if (board[j][i] != 0) {
+                            if (board[j][i] == block) {
+                                board[index + 1][i] = block * 2;
+                                board[j][i] = 0;
+                                block = 0;
+                            } else {
+                                block = board[j][i];
+                                board[j][i] = 0;
+                                board[index][i] = block;
+                                index--;
+                            }
+                        }
+                    }
+                }
+                break;
+
+            case 2:
+                for (int i = 1; i <= n; i++) {
+                    int block = 0;
+                    int index = 1;
+                    for (int j = 1; j <= n; j++) {
+                        if (board[i][j] != 0) {
+                            if (board[i][j] == block) {
+                                board[i][index - 1] = block * 2;
+                                board[i][j] = 0;
+                                block = 0;
+                            } else {
+                                block = board[i][j];
+                                board[i][j] = 0;
+                                board[i][index] = block;
+                                index++;
+                            }
+                        }
+                    }
+                }
+                break;
+
+            case 3:
+                for (int i = 1; i <= n; i++) {
+                    int block = 0;
+                    int index = n;
+                    for (int j = n; j >= 1; j--) {
+                        if (board[i][j] != 0) {
+                            if (board[i][j] == block) {
+                                board[i][index + 1] = block * 2;
+                                board[i][j] = 0;
+                                block = 0;
+                            } else {
+                                block = board[i][j];
+                                board[i][j] = 0;
+                                board[i][index] = block;
+                                index--;
+                            }
+                        }
+                    }
+                }
+                break;
+        }
+    }
+
+    private static void combination(int depth, List<Integer> list) {
+        if (depth == 0) {
+            comb.add(new ArrayList<>(list));
+            return;
         }
 
-        private void compactFrom(Direction direction, int x, int y) {
-            switch(direction) {
-                case UP: compactToUp(direction, x, y); break;
-                case DOWN: compactToDown(direction, x, y); break;
-                case RIGHT: compactToRight(direction, x, y); break;
-                case LEFT: compactToLeft(direction, x, y); break;
-            }
+        for (int i = 0; i <= 3; i++) {
+            list.add(i);
+            combination(depth - 1, list);
+            list.remove(list.size() - 1);
         }
+    }
 
-        private void compactToUp(Direction direction, int x, int y) {
-            for (int i = 1; i <= n; i++) {
-
-            }
+    private static int[][] copyBoard(int[][] board) {
+        int[][] copyBoard = new int[board.length][];
+        for (int i = 0; i < board.length; i++) {
+            copyBoard[i] = Arrays.copyOf(board[i], board[i].length);
         }
-        private void compactToDown(Direction direction, int x, int y) {}
-        private void compactToRight(Direction direction, int x, int y) {}
-        private void compactToLeft(Direction direction, int x, int y) {}
+        return copyBoard;
+    }
 
-        private enum Direction {
-            RIGHT(0, -1), LEFT(0, 1), UP(1, 0), DOWN(-1, 0);
+    public static int findMax(int[][] map) {
+        int answer = 0;
+        for(int i = 1; i <= n; i++)
+            for(int j = 1; j <= n; j++)
+                answer = Math.max(answer, map[i][j]);
 
-            Direction(int dx, int dy) {
-                this.dx = dx;
-                this.dy = dy;
-            }
-
-            private final int dx;
-            private final int dy;
-
-            public int getDx() { return dx; }
-            public int getDy() { return dy; }
-        }
+        return answer;
     }
 }
