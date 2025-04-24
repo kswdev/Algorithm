@@ -126,25 +126,26 @@ public class BOJ_14891 {
         }
 
         public void addFirst (int x) {
-            arr[head] = x;
             head = (head - 1 + capacity) % capacity;
+            arr[head] = x;
         }
 
         public void addLast (int x) {
-            tail = (tail + 1) % capacity;
             arr[tail] = x;
+            tail = (tail + 1) % capacity;
         }
 
         public int pollFirst () {
-            head = (head + 1) % capacity;
             int headVal = arr[head];
             arr[head] = -1;
+            head = (head + 1) % capacity;
             return headVal;
         }
 
         public int pollLast () {
-            int tailVal = arr[tail];
             tail = (tail - 1 + capacity) % capacity;
+            int tailVal = arr[tail];
+            arr[tail] = -1;
             return tailVal;
         }
 
@@ -154,7 +155,7 @@ public class BOJ_14891 {
         }
 
         public int getLeftTip () {
-            int leftNum = (tail - 1 + capacity) % capacity;
+            int leftNum = (head - 2 + capacity) % capacity;
             return arr[leftNum];
         }
     }
