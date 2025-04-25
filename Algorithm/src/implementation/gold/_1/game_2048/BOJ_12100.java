@@ -39,12 +39,8 @@ public class BOJ_12100 {
             }
         }
 
-        move(3, map);
-        for (int i = 1; i <= n; i++) {
-            System.out.println(Arrays.toString(map[i]));
-        }
-        //start(map);
-        //System.out.println(max);
+        start(map);
+        System.out.println(max);
     }
 
     private static void start(int[][] board) {
