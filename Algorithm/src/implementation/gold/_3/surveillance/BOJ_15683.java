@@ -85,12 +85,18 @@ public class BOJ_15683 {
             this.map = map;
             this.cctvList = cctvList;
         }
+
+        private int maxArea() {
+
+            return 0;
+        }
     }
 
     private interface Cctv {
         int[] dx = {-1, 1, 0, 0};
         int[] dy = {0, 0, -1, 1};
         void surveillance();
+        int getId();
     }
 
     private static class CctvA implements Cctv {
@@ -104,11 +110,16 @@ public class BOJ_15683 {
             this.id = id;
             this.x = x;
             this.y = y;
-            this.dir = new int[][] {{0, 1, 2, 3}};
+            this.dir = new int[][] {{0}, {1}, {2}, {3}};
         }
 
         public void surveillance() {
 
+        }
+
+        @Override
+        public int getId() {
+            return id;
         }
     }
 
@@ -129,23 +140,33 @@ public class BOJ_15683 {
         public void surveillance() {
 
         }
+
+        @Override
+        public int getId() {
+            return id;
+        }
     }
 
     private static class CctvC implements Cctv {
         private final int id;
         private final int x;
         private final int y;
-        private final int[] dir;
+        private final int[][] dir;
 
         private CctvC(int id, int x, int y) {
             this.id = id;
             this.x = x;
             this.y = y;
-            this.dir = new int[] {0, 1, 2, 3};
+            this.dir = new int[][] {{0, 3}, {3, 1}, {1, 2}, {2, 0}};
         }
 
         public void surveillance() {
 
+        }
+
+        @Override
+        public int getId() {
+            return id;
         }
     }
 
@@ -153,17 +174,22 @@ public class BOJ_15683 {
         private final int id;
         private final int x;
         private final int y;
-        private final int[] dir;
+        private final int[][] dir;
 
         private CctvD(int id, int x, int y) {
             this.id = id;
             this.x = x;
             this.y = y;
-            this.dir = new int[] {0, 1, 2, 3};
+            this.dir = new int[][] {{0, 1, 3}, {0, 1, 2}, {1, 2, 3}, {0, 2, 3}};
         }
 
         public void surveillance() {
 
+        }
+
+        @Override
+        public int getId() {
+            return id;
         }
     }
 
@@ -171,17 +197,22 @@ public class BOJ_15683 {
         private final int id;
         private final int x;
         private final int y;
-        private final int[] dir;
+        private final int[][] dir;
 
         private CctvE(int id, int x, int y) {
             this.id = id;
             this.x = x;
             this.y = y;
-            this.dir = new int[] {0};
+            this.dir = new int[][] {{0, 1, 2, 3}};
         }
 
         public void surveillance() {
 
+        }
+
+        @Override
+        public int getId() {
+            return id;
         }
     }
 }
