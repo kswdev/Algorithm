@@ -55,19 +55,19 @@ public class BOJ_15683 {
                 if (1 <= map[i][j] && map[i][j] <= 5) {
                     switch (map[i][j]) {
                         case 1:
-                            cctvList.add(new CctvA(map[i][j], i, j));
+                            cctvList.add(new CctvA(i, j));
                             break;
                         case 2:
-                            cctvList.add(new CctvB(map[i][j], i, j));
+                            cctvList.add(new CctvB(i, j));
                             break;
                         case 3:
-                            cctvList.add(new CctvC(map[i][j], i, j));
+                            cctvList.add(new CctvC(i, j));
                             break;
                         case 4:
-                            cctvList.add(new CctvD(map[i][j], i, j));
+                            cctvList.add(new CctvD(i, j));
                             break;
                         case 5:
-                            cctvList.add(new CctvE(map[i][j], i, j));
+                            cctvList.add(new CctvE(i, j));
                             break;
                     }
                 }
@@ -75,144 +75,300 @@ public class BOJ_15683 {
         }
 
         Room room = new Room(map, cctvList);
+        System.out.println(room.minArea());
     }
 
     private static class Room {
         private final int[][] map;
         private final List<Cctv> cctvList;
+        private int min = Integer.MAX_VALUE;
 
         private Room(int[][] map, List<Cctv> cctvList) {
             this.map = map;
             this.cctvList = cctvList;
         }
 
-        private int maxArea() {
+        private int minArea() {
+            int[][] newMap = deepCopy(this.map);
+            dfs(0, newMap);
+            return this.min;
+        }
 
-            return 0;
+        private void dfs(int depth, int[][] map) {
+            if (depth >= cctvList.size()) {
+                 this.min = Math.min(this.min, countArea(map));
+                 return;
+            }
+
+            Cctv currentCctv = cctvList.get(depth);
+            int actionCount = currentCctv.getActionCount();
+
+            for (int i = 0; i < actionCount; i++) {
+                int[][] surveillanced = currentCctv.surveillance(i, deepCopy(map));
+                dfs(depth + 1, surveillanced);
+            }
+        }
+
+        private int[][] deepCopy(int[][] map) {
+            int[][] tempMap = new int[map.length][map[0].length];
+
+            for (int i = 0; i < tempMap.length; i++) {
+                System.arraycopy(map[i], 0, tempMap[i], 0, tempMap[i].length);
+            }
+
+            return tempMap;
+        }
+
+        private int countArea(int[][] map) {
+            int count = 0;
+
+            for (int x = 0; x < map.length; x++) {
+                for (int y = 0; y < map[x].length; y++) {
+                    if (map[x][y] == 0) count++;
+                }
+            }
+
+            return count;
         }
     }
 
     private interface Cctv {
         int[] dx = {-1, 1, 0, 0};
         int[] dy = {0, 0, -1, 1};
-        void surveillance();
-        int getId();
+        int[][] surveillance(int idx, int[][] map);
+        int getActionCount();
+        void markEmptyRoom(int dir, int[][] map);
     }
 
     private static class CctvA implements Cctv {
-        private final int id;
         private final int x;
         private final int y;
-        private final int[][] dir;
+        private final int[][] dirs;
 
 
-        private CctvA(int id, int x, int y) {
-            this.id = id;
+        private CctvA(int x, int y) {
             this.x = x;
             this.y = y;
-            this.dir = new int[][] {{0}, {1}, {2}, {3}};
+            this.dirs = new int[][] {{0}, {1}, {2}, {3}};
         }
 
-        public void surveillance() {
+        public int[][] surveillance(int idx, int[][] map) {
 
+            int[] dir = dirs[idx];
+
+            for (int d : dir) {
+                markEmptyRoom(d, map);
+            }
+
+            return map;
         }
 
         @Override
-        public int getId() {
-            return id;
+        public int getActionCount() {
+            return dirs.length;
+        }
+
+        @Override
+        public void markEmptyRoom(int dir, int[][] map) {
+            int cx = this.x;
+            int cy = this.y;
+            while(true) {
+                cx += dx[dir];
+                cy += dy[dir];
+
+                if (cx >= map.length || cx < 0 || cy >= map[0].length || cy < 0)
+                    break;
+                if (map[cx][cy] == 6)
+                    break;
+
+                else if (map[cx][cy] == 0)
+                    map[cx][cy] = -1;
+            }
         }
     }
 
     private static class CctvB implements Cctv {
-        private final int id;
         private final int x;
         private final int y;
-        private final int[][] dir;
+        private final int[][] dirs;
 
-        private CctvB(int id, int x, int y) {
-            this.id = id;
+        private CctvB(int x, int y) {
             this.x = x;
             this.y = y;
-            this.dir = new int[][] {{0, 1},
+            this.dirs = new int[][] {{0, 1},
                                    {2, 3}};
         }
 
-        public void surveillance() {
+        public int[][] surveillance(int idx, int[][] map) {
 
+            int[] dir = dirs[idx];
+
+            for (int d : dir) {
+                markEmptyRoom(d, map);
+            }
+
+            return map;
         }
 
         @Override
-        public int getId() {
-            return id;
+        public int getActionCount() {
+            return dirs.length;
+        }
+
+        @Override
+        public void markEmptyRoom(int dir, int[][] map) {
+            int cx = this.x;
+            int cy = this.y;
+            while(true) {
+                cx += dx[dir];
+                cy += dy[dir];
+
+                if (cx >= map.length || cx < 0 || cy >= map[0].length || cy < 0)
+                    break;
+                if (map[cx][cy] == 6)
+                    break;
+
+                else if (map[cx][cy] == 0)
+                    map[cx][cy] = -1;
+            }
         }
     }
 
     private static class CctvC implements Cctv {
-        private final int id;
         private final int x;
         private final int y;
-        private final int[][] dir;
+        private final int[][] dirs;
 
-        private CctvC(int id, int x, int y) {
-            this.id = id;
+        private CctvC(int x, int y) {
             this.x = x;
             this.y = y;
-            this.dir = new int[][] {{0, 3}, {3, 1}, {1, 2}, {2, 0}};
+            this.dirs = new int[][] {{0, 3}, {3, 1}, {1, 2}, {2, 0}};
         }
 
-        public void surveillance() {
+        public int[][] surveillance(int idx, int[][] map) {
 
+            int[] dir = dirs[idx];
+
+            for (int d : dir) {
+                markEmptyRoom(d, map);
+            }
+
+            return map;
         }
 
         @Override
-        public int getId() {
-            return id;
+        public int getActionCount() {
+            return dirs.length;
+        }
+
+        @Override
+        public void markEmptyRoom(int dir, int[][] map) {
+            int cx = this.x;
+            int cy = this.y;
+            while(true) {
+                cx += dx[dir];
+                cy += dy[dir];
+
+                if (cx >= map.length || cx < 0 || cy >= map[0].length || cy < 0)
+                    break;
+                if (map[cx][cy] == 6)
+                    break;
+
+                else if (map[cx][cy] == 0)
+                    map[cx][cy] = -1;
+            }
         }
     }
 
     private static class CctvD implements Cctv {
-        private final int id;
         private final int x;
         private final int y;
-        private final int[][] dir;
+        private final int[][] dirs;
 
-        private CctvD(int id, int x, int y) {
-            this.id = id;
+        private CctvD(int x, int y) {
             this.x = x;
             this.y = y;
-            this.dir = new int[][] {{0, 1, 3}, {0, 1, 2}, {1, 2, 3}, {0, 2, 3}};
+            this.dirs = new int[][] {{0, 1, 3}, {0, 1, 2}, {1, 2, 3}, {0, 2, 3}};
         }
 
-        public void surveillance() {
+        public int[][] surveillance(int idx, int[][] map) {
 
+            int[] dir = dirs[idx];
+
+            for (int d : dir) {
+                markEmptyRoom(d, map);
+            }
+
+            return map;
         }
 
         @Override
-        public int getId() {
-            return id;
+        public int getActionCount() {
+            return dirs.length;
+        }
+
+        @Override
+        public void markEmptyRoom(int dir, int[][] map) {
+            int cx = this.x;
+            int cy = this.y;
+            while(true) {
+                cx += dx[dir];
+                cy += dy[dir];
+
+                if (cx >= map.length || cx < 0 || cy >= map[0].length || cy < 0)
+                    break;
+                if (map[cx][cy] == 6)
+                    break;
+
+                else if (map[cx][cy] == 0)
+                    map[cx][cy] = -1;
+            }
         }
     }
 
     private static class CctvE implements Cctv {
-        private final int id;
         private final int x;
         private final int y;
-        private final int[][] dir;
+        private final int[][] dirs;
 
-        private CctvE(int id, int x, int y) {
-            this.id = id;
+        private CctvE(int x, int y) {
             this.x = x;
             this.y = y;
-            this.dir = new int[][] {{0, 1, 2, 3}};
+            this.dirs = new int[][] {{0, 1, 2, 3}};
         }
 
-        public void surveillance() {
+        public int[][] surveillance(int idx, int[][] map) {
 
+            int[] dir = dirs[idx];
+
+            for (int d : dir) {
+                markEmptyRoom(d, map);
+            }
+
+            return map;
         }
 
         @Override
-        public int getId() {
-            return id;
+        public int getActionCount() {
+            return dirs.length;
+        }
+
+        @Override
+        public void markEmptyRoom(int dir, int[][] map) {
+            int cx = this.x;
+            int cy = this.y;
+            while(true) {
+                cx += dx[dir];
+                cy += dy[dir];
+
+                if (cx >= map.length || cx < 0 || cy >= map[0].length || cy < 0)
+                    break;
+                if (map[cx][cy] == 6)
+                    break;
+
+                else if (map[cx][cy] == 0)
+                    map[cx][cy] = -1;
+            }
         }
     }
 }
