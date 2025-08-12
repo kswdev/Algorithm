@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.StringTokenizer;
 
 
@@ -65,65 +64,33 @@ public class BOJ_17144 {
         }
 
         System.out.println(room.sumDusts());
-
     }
 
     private static class Room {
 
         private Cleaner cleaner;
-        private List<Dust> dusts = new ArrayList<>();
+        private final List<Dust> dusts = new ArrayList<>();
         private int[][] map;
 
         private Room() {}
 
         private void diffuseAll() {
-            List<Dust> newDusts = new ArrayList<>();
-            int[][] newMap = new int[map.length][map[0].length];
-
-            for (Dust dust : dusts) {
-                List<Dust> diffused = dust.diffuse(this.map);
-                this.merge(newDusts, diffused);
-            }
-
-            this.dusts = newDusts;
-            this.resetMap(newMap, dusts);
+            for (Dust dust : dusts)
+                dust.diffuse(this.map);
         }
 
         private void clean() {
             this.cleaner.cleanTop(this.cleaner.getTop(), this.map);
             this.cleaner.cleanBottom(this.cleaner.getBottom(), this.map);
-            this.resetDusts();
-        }
-        
-        private void merge(List<Dust> dusts, List<Dust> diffused) {
-            for (Dust dust : diffused) {
-                if (dusts.contains(dust)) {
-                    Dust duplicated = dusts.get(dusts.indexOf(dust));
-                    duplicated.sumValue(dust);
-                } else
-                    dusts.add(dust);
-            }
         }
 
         private void resetDusts() {
             dusts.clear();
             for (int i = 0; i < this.map.length; i++) {
                 for (int j = 0; j < this.map[i].length; j++) {
-                    if (map[i][j] != -1 || map[i][j] != 0) dusts.add(new Dust(i, j, map[i][j]));
+                    if (map[i][j] != -1 && map[i][j] != 0) dusts.add(new Dust(i, j, map[i][j]));
                 }
             }
-        }
-
-        private void resetMap(int[][] map, List<Dust> dusts) {
-            for (Dust dust : dusts)
-                map[dust.x][dust.y] = dust.value;
-
-            int[] topCleaner = this.cleaner.getTop();
-            int[] bottomCleaner = this.cleaner.getBottom();
-
-            map[topCleaner[0]][topCleaner[1]] = -1;
-            map[bottomCleaner[0]][bottomCleaner[1]] = -1;
-            this.map = map;
         }
 
         private int sumDusts() {
@@ -238,13 +205,8 @@ public class BOJ_17144 {
             this.value = value;
         }
 
-        private List<Dust> diffuse(int[][] map) {
-            List<Dust> dusts = new ArrayList<>();
-
-            if (value < 5)  {
-                dusts.add(this);
-                return dusts;
-            }
+        private void diffuse(int[][] map) {
+            if (value < 5) return;
 
             int diffusedValue = this.value / 5;
             
@@ -254,31 +216,9 @@ public class BOJ_17144 {
                 
                 if (nX < 0 || nY < 0 || nX >= map.length || nY >= map[0].length || map[nX][nY] == -1) continue;
                 
-                Dust newDust = new Dust(nX, nY, diffusedValue);
-                
-                dusts.add(newDust);
-                this.value -= diffusedValue;
+                map[nX][nY] += diffusedValue;
+                map[this.x][this.y] -= diffusedValue;
             }
-            
-            dusts.add(this);
-            
-            return dusts;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (o == null || getClass() != o.getClass()) return false;
-            Dust dust = (Dust) o;
-            return x == dust.x && y == dust.y;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(x, y);
-        }
-
-        public void sumValue(Dust dust) {
-            this.value += dust.value;
         }
     }
 }
