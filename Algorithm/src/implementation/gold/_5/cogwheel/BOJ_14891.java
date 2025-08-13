@@ -1,4 +1,4 @@
-package implementation.gold._5.cogWheel;
+package implementation.gold._5.cogwheel;
 
 import java.io.BufferedReader;
 import java.io.IOException;
