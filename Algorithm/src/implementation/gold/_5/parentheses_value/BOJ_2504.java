@@ -3,8 +3,6 @@ package implementation.gold._5.parentheses_value;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Stack;
 
 /*
@@ -35,8 +33,8 @@ public class BOJ_2504 {
         String parentheses = br.readLine();
 
         try {
-            int result = calculateParentheses(parentheses, 0, parentheses.length() - 1);
-            System.out.println(result);
+            if (parentheses.length() % 2 == 1) System.out.println(0);
+            else System.out.println(calculateParentheses(parentheses, 0, parentheses.length() - 1));
         } catch (IllegalArgumentException e) {
             System.out.println(0);
         }
@@ -45,20 +43,23 @@ public class BOJ_2504 {
     private static int calculateParentheses(String parentheses, int startIndex, int endIndex) {
         int sum = 0;
 
-        for (int i = startIndex; i < endIndex; i = getMatchingParenthesesEndIndex(parentheses, i) + 1) {
-            if (endIndex == -1)
-                throw new IllegalArgumentException();
+        while (startIndex < endIndex) {
+            char startParentheses = parentheses.charAt(startIndex);
 
-            char startParentheses = parentheses.charAt(i);
+            int newEndIndex = getMatchingParenthesesEndIndex(parentheses, startIndex);
 
-            if (startParentheses == openSmallParentheses && parentheses.charAt(i+1) == closeSmallParentheses)
+            if (startParentheses == openSmallParentheses && startIndex+1 == newEndIndex) {
                 sum += 2;
-            else if (startParentheses == openBigParentheses && parentheses.charAt(i+1) == closeBigParentheses)
+            } else if (startParentheses == openBigParentheses && startIndex+1 == newEndIndex) {
                 sum += 3;
-            else if (startParentheses == openSmallParentheses)
-                sum += 2 * calculateParentheses(parentheses, i + 1, endIndex - 1);
-            else if (startParentheses == openBigParentheses)
-                sum += 3 * calculateParentheses(parentheses, i + 1, endIndex - 1);
+            }
+            else if (startParentheses == openSmallParentheses) {
+                sum += 2 * calculateParentheses(parentheses, startIndex + 1, newEndIndex);
+            } else if (startParentheses == openBigParentheses) {
+                sum += 3 * calculateParentheses(parentheses, startIndex + 1, newEndIndex);
+            }
+
+            startIndex =  newEndIndex + 1;
         }
 
         return sum;
@@ -80,7 +81,7 @@ public class BOJ_2504 {
             if (stack.isEmpty()) return i;
         }
 
-        return -1;
+        throw new IllegalArgumentException();
     }
 
     private static boolean matching(char parenthesesA,  char parenthesesB) {
