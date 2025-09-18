@@ -37,7 +37,7 @@ public class BOJ_1082 {
 
     private static int N, M;
     private static int[] price;
-    private static int[] dp;
+    private static String[] dp;
 
     public static void main(String[] args) throws IOException {
 
@@ -51,28 +51,47 @@ public class BOJ_1082 {
             }
 
             M = Integer.parseInt(br.readLine());
-            dp = new int[M + 1];
-            Arrays.fill(dp, -1);
+            dp = new String[M + 1];
+            Arrays.fill(dp, "-1");
         }
-        System.out.println(maxRoomNum(M));
+        String result = maxRoomNum(M, true);
+        if (result.isEmpty())
+            System.out.println("0");
+        else
+            System.out.println(result);
     }
 
-    private static int maxRoomNum(int money) {
+    private static String maxRoomNum(int money, boolean init) {
 
-        if (dp[money] != -1) {
+        if (dp[money] != "-1") {
             return dp[money];
         }
 
-        for (int room = 0; room < N; room++) {
-            if (money >= price[room]) {
-                int next = maxRoomNum(money - price[room]);
+        String best = "";
 
-                if (next != -1) {
-                    dp[money] = Math.max(dp[money], (room * 10) + next);
+        for (int room = 0; room < N; room++) {
+            if (init && room == 0) continue;
+            if (money >= price[room]) {
+                best = max(best, String.valueOf(room));
+                String next = maxRoomNum(money - price[room], false);
+
+                if (next != "-1") {
+                    best = max(best, room + next);
                 }
             }
         }
 
+        dp[money] = best;
         return dp[money];
+    }
+
+    private static String max(String a, String b) {
+        if (a.length() > b.length()) {
+            return a;
+        } else if (a.length() < b.length()) {
+            return b;
+        }
+
+        return (a.compareTo(b) >= 0) ? a : b;
     }
 }
