@@ -28,13 +28,12 @@ package dynamic_programming.gold1.drawing_trade;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 
 public class BOJ_1029 {
 
     private static int N, checkVisit;
     private static int[][] ledger;
-    private static int[][] dp;
+    private static int[][][] dp;
 
     public static void main(String[] args) throws IOException {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
@@ -42,10 +41,10 @@ public class BOJ_1029 {
             checkVisit = (1 << N) - 1;
 
             ledger = new int[N + 1][N + 1];
-            dp = new int[N + 1][checkVisit];
+            dp = new int[N+1][10][checkVisit];
+
             for (int i = 1; i <= N; i++) {
                 String trade = br.readLine();
-                Arrays.fill(dp[i], -1);
                 for (int j = 1; j <= N; j++) {
                     ledger[i][j] = trade.charAt(j - 1) - '0';
                 }
@@ -56,31 +55,32 @@ public class BOJ_1029 {
         System.out.println(result);
     }
 
-    private static int solve(int seller, int currentPrice, int count, int check) {
+    private static int solve(int owner, int currentPrice, int count, int check) {
 
         // 모두 방문했을 경우
         if (check == checkVisit)
             return count;
-        if (dp[seller][check] != -1)
-            return dp[seller][check];
 
-        dp[seller][check] = count;
+        if (dp[owner][currentPrice][check] != 0)
+            return dp[owner][currentPrice][check];
 
-        for (int consumer = 2; consumer <= N; consumer++) {
+        dp[owner][currentPrice][check] = count;
+
+        for (int client = 2; client <= N; client++) {
             // 판매자가 구매자와 다름 || 구매자가 이미 구매한 그림이 아님
-            if (consumer == seller || isSold(consumer, check)) continue;
+            if (client == owner || isSold(client, check)) continue;
 
             // 판매가
-            int soldPrice = ledger[seller][consumer];
+            int soldPrice = ledger[owner][client];
 
             if (currentPrice <= soldPrice) {
-                int newCheck = checkVisit(consumer, check);
-                dp[seller][check] = Math.max(dp[seller][check], solve(consumer, soldPrice, count + 1, newCheck));
+                int newCheck = checkVisit(client, check);
+                dp[owner][currentPrice][check] = Math.max(dp[owner][currentPrice][check], solve(client, soldPrice, count + 1, newCheck));
             }
         }
 
 
-        return dp[seller][check];
+        return dp[owner][currentPrice][check];
     }
 
     private static boolean isSold(int consumer, int check) {
