@@ -35,12 +35,14 @@ public class BOJ_1099 {
     private static int N;
     private static int[] dp;
     private static String sentence;
+    private static int sLen;
     private static String[] words;
 
     public static void main(String[] args) throws IOException {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
             sentence = br.readLine();
-            dp = new int[sentence.length()];
+            sLen = sentence.length();
+            dp = new int[sLen+1];
             Arrays.fill(dp, INF);
 
             N = Integer.parseInt(br.readLine());
@@ -51,14 +53,24 @@ public class BOJ_1099 {
             }
         }
 
-        int ans = decryptSentenceTryMinCount(0, sentence.length()-1);
+        dp[sLen] = 0;
 
-        if (ans == INF)
-            System.out.println(-1);
-        else
-            System.out.println(ans);
+        for (int to = sLen; to >= 0; to--) {
+            for (String candidate : words) {
+                int from = to - candidate.length();
+                if (from < 0) continue;
+                int result = countMissMatch(candidate, from, to);
+                if (result != INF) {
+                    dp[from] = Math.min(dp[from], result + dp[to]);
+                }
+            }
+        }
+
+        System.out.println(dp[0]);
     }
 
+/************ 탑 다운 ************/
+/*
     private static int decryptSentenceTryMinCount(int from, int to) {
 
         if (from > to) return 0;
@@ -74,6 +86,7 @@ public class BOJ_1099 {
 
         return dp[from];
     }
+*/
 
     private static int countMissMatch(String candidate, int from, int to) {
         if (to > sentence.length()) return INF;
