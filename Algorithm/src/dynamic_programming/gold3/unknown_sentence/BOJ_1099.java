@@ -66,7 +66,8 @@ public class BOJ_1099 {
             }
         }
 
-        System.out.println(dp[0]);
+        if (dp[0] == INF) System.out.println(-1);
+        else System.out.println(dp[0]);
     }
 
 /************ 탑 다운 ************/
