@@ -27,29 +27,24 @@ public class BOJ_10158 {
             T = Integer.parseInt(br.readLine());
         }
 
-        int[] point = destination(x, y, T);
+        int pointXShare = (T + x) / W;
+        int pointYShare = (T + y) / H;
+        int pointXRemain = (T + x) % W;
+        int pointYRemain = (T + y) % H;
 
-        System.out.println(point[0] + " " + point[1]);
-    }
+        int pointX;
+        int pointY;
 
-    private static int[] destination(int x, int y, int t) {
-        int initDx = 1;
-        int initDy = 1;
+        if (pointXShare % 2 == 0)
+            pointX = pointXRemain;
+        else
+            pointX = W - pointXRemain;
 
+        if (pointYShare % 2 == 0)
+            pointY = pointYRemain;
+        else
+            pointY = H - pointYRemain;
 
-        for (int i = 0; i < t; i++) {
-            if (x + initDx > W || x + initDx < 0) {
-                initDx *= -1;
-            }
-
-            if (y + initDy > H || y + initDy < 0) {
-                initDy *= -1;
-            }
-
-            x += initDx;
-            y += initDy;
-        }
-
-        return new int[]{x, y};
+        System.out.println(pointX + " " + pointY);
     }
 }
