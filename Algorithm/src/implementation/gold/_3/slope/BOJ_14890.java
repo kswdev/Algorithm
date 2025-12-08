@@ -32,6 +32,8 @@ import java.util.StringTokenizer;
 public class BOJ_14890 {
     private static int N, L;
     private static int[][] map;
+    private static int[][] rotateMap;
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new  StringTokenizer(br.readLine());
@@ -39,21 +41,79 @@ public class BOJ_14890 {
         N = Integer.parseInt(st.nextToken());
         L = Integer.parseInt(st.nextToken());
 
+        map = new int[N][N];
+        rotateMap = new int[N][N];
+
         for (int i = 0; i < N; i++) {
             st = new  StringTokenizer(br.readLine());
             for (int j = 0; j < N; j++) {
-                map[i][j] = Integer.parseInt(st.nextToken());
+                int val = Integer.parseInt(st.nextToken());
+                map[i][j] = val;
+                rotateMap[j][i] = val;
             }
         }
+
+        int cnt = 0;
+        for (int i = 0; i < N; i++) {
+            if (isRowPassable(map[i])) cnt++;
+            if (isRowPassable(rotateMap[i])) cnt++;
+        }
+
+        System.out.print(cnt);
     }
 
-    private boolean isRowWalkable(int row) {
-        int[] newMap = map[row].clone();
+    private static boolean isRowPassable(int[] road) {
+
+        int lastSlope = -1;
 
         for (int i = 1; i < N; i++) {
-            if (newMap[i] == newMap[i-1]) continue;
-            else if (Math.abs(newMap[i] - newMap[i-1]) > 1) return false;
+            int curr = road[i];
+            int prev = road[i - 1];
+
+            if (isHigherThanSlope(curr, prev)) return false;
+            else if (isEqualSlopeHeight(curr, prev)) {
+                if (isAscending(curr, prev)) {
+                    if (isFlat(road, i-L, i-1, lastSlope))
+                        lastSlope = i-1;
+                    else
+                        return false;
+                } else if (isDescending(curr, prev)) {
+                    if (isFlat(road, i, i+L-1, lastSlope))
+                        lastSlope = i+L-1;
+                    else
+                        return false;
+                }
+            }
         }
+
+        return true;
+    }
+
+    private static boolean isHigherThanSlope(int curr, int prev) {
+        return (Math.abs(curr - prev) > 1);
+    }
+
+    private static boolean isEqualSlopeHeight(int curr, int prev) {
+        return (Math.abs(curr - prev) == 1);
+    }
+
+    private static boolean isAscending(int curr, int prev) {
+        return curr - prev > 0;
+    }
+
+    private static boolean isDescending(int curr, int prev) {
+        return curr - prev < 0;
+    }
+
+    private static boolean isFlat(int[] road, int start, int end, int lastSlope) {
+        if (start < 0) return false;
+        if (end >= road.length) return false;
+        if (start <= lastSlope && lastSlope <= end) return false;
+
+        for (int i = start + 1; i <= end; i++) {
+            if (road[start] != road[i]) return false;
+        }
+
         return true;
     }
 }
