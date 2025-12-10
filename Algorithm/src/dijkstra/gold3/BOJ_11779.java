@@ -21,21 +21,23 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
-import java.util.stream.Collectors;
 
-import static java.util.Comparator.*;
-import static java.util.AbstractMap.*;
+import static java.util.Comparator.comparingInt;
 
 public class BOJ_11779 {
 
     private static List<CityStation> cityStations = new ArrayList<>();
+    private static Stack<Integer> routeList = new Stack<>();
+    private static int[] route;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder sb = new StringBuilder();
         StringTokenizer st;
 
         int numOfCity = Integer.parseInt(br.readLine());
         int numOfBus = Integer.parseInt(br.readLine());
+        route = new int[numOfCity + 1];
 
         for (int i = 0; i <= numOfCity; i++) {
             cityStations.add(new CityStation());
@@ -57,51 +59,45 @@ public class BOJ_11779 {
         int start = Integer.parseInt(st.nextToken());
         int end = Integer.parseInt(st.nextToken());
 
-        History result = minCost(start, end, numOfCity);
 
-        System.out.println(result.getAccumulatedCost());
-        System.out.println(result.getVisited().size());
-        System.out.println(
-                result.getVisited().stream()
-                        .map(String::valueOf)
-                        .collect(Collectors.joining(" "))
-        );
-    }
+        int result = minCost(start, end, numOfCity);
+        setRoutes(end);
+        int size = routeList.size();
 
-    private static History minCost(int start, int end, int numOfCity) {
-        Queue<SimpleEntry<Ticket, History>> queue = new PriorityQueue<>(comparingInt(
-                entry -> entry.getValue().getAccumulatedCost()));
-
-        int[] cost = new int[numOfCity + 1];
-        Arrays.fill(cost, Integer.MAX_VALUE);
-        cost[start] = 0;
-
-        CityStation station = cityStations.get(start);
-
-        for (Ticket ticket : station.getTickets()) {
-            History history = new History(start);
-            history.checkTicket(ticket);
-            cost[ticket.getDestination()] = ticket.getCost();
-            queue.add(new SimpleEntry<>(ticket, history));
+        while (!routeList.isEmpty()) {
+            sb.append(routeList.pop()).append(" ");
         }
 
+        System.out.println(result);
+        System.out.println(size);
+        System.out.println(sb);
+    }
+
+    private static int minCost(int start, int end, int numOfCity) {
+        Queue<int[]> queue = new PriorityQueue<>(comparingInt(a -> a[1]));
+        queue.add(new int[] {start, 0});
+        int[] dcost = new int[numOfCity + 1];
+        Arrays.fill(dcost, Integer.MAX_VALUE);
+        dcost[start] = 0;
+
         while (!queue.isEmpty()) {
-            SimpleEntry<Ticket, History> entry = queue.poll();
-            Ticket currTicket = entry.getKey();
-            History currHistory = entry.getValue();
+            int[] poll = queue.poll();
+            int city = poll[0];
+            int cost = poll[1];
 
-            if (isArrive(currTicket.getDestination(), end))
-                return currHistory;
+            if (isArrive(city, end)) return cost;
 
-            CityStation nextStation = cityStations.get(currTicket.getDestination());
+            CityStation station = cityStations.get(city);
 
-            for (Ticket nextTicket : nextStation.getTickets()) {
-                if (isCheaperOrEqual(cost[nextTicket.getDestination()], currHistory, nextTicket)) {
-                    History nextHistory = new History(currHistory);
-                    nextHistory.checkTicket(nextTicket);
-                    cost[nextTicket.getDestination()] = currHistory.getAccumulatedCost() + nextTicket.getCost();
-                    queue.add(new SimpleEntry<>(nextTicket, nextHistory));
-                }
+            for (Ticket ticket : station.getTickets()) {
+                int nextCity = ticket.getDestination();
+                int newCost = ticket.getCost();
+
+                if (isCheaperThan(dcost[nextCity], cost + newCost)) continue;
+
+                dcost[nextCity] = cost + newCost;
+                queue.add(new int[] {nextCity, cost + newCost});
+                route[nextCity] = city;
             }
         }
 
@@ -117,34 +113,6 @@ public class BOJ_11779 {
 
         private List<Ticket> getTickets() {
             return this.tickets;
-        }
-    }
-
-    private static class History {
-        private List<Integer> visited = new ArrayList<>();
-        private int accumulatedCost = 0;
-
-        private History(int startCity) {
-            this.visited.add(startCity);
-        }
-
-        private History(History history) {
-            this.visited.addAll(history.getVisited());
-            this.accumulatedCost = history.getAccumulatedCost();
-        }
-
-        private void checkTicket(Ticket ticket) {
-            int cityNum = ticket.getDestination();
-            this.visited.add(cityNum);
-            this.accumulatedCost += ticket.getCost();
-        }
-
-        private int getAccumulatedCost() {
-            return accumulatedCost;
-        }
-
-        private List<Integer> getVisited() {
-            return this.visited;
         }
     }
 
@@ -166,11 +134,21 @@ public class BOJ_11779 {
         }
     }
 
+    private static void setRoutes(int end) {
+
+        routeList.add(end);
+
+        int prev = route[end];
+        if (prev == 0) return;
+
+        setRoutes(prev);
+    }
+
     private static boolean isArrive(int destination, int end) {
         return destination == end;
     }
 
-    private static boolean isCheaperOrEqual(int cost, History history, Ticket ticket) {
-        return cost >= (history.getAccumulatedCost() + ticket.getCost());
+    private static boolean isCheaperThan(int accumulatedCost, int newCost) {
+        return accumulatedCost < newCost;
     }
 }
