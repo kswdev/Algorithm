@@ -9,7 +9,6 @@ import static java.util.AbstractMap.*;
 import static java.util.Comparator.*;
 
 /*
- *
  * 서강 그라운드
  *
  * 문제.
