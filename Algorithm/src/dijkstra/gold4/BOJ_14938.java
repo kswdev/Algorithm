@@ -1,13 +1,5 @@
 package dijkstra.gold4;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.*;
-
-import static java.util.AbstractMap.*;
-import static java.util.Comparator.*;
-
 /*
  * 서강 그라운드
  *
@@ -24,6 +16,16 @@ import static java.util.Comparator.*;
  *  둘째 줄 : n개의 숫자가 차례대로 각 구역에 있는 아이템의 수 t (1 ≤ t ≤ 30)를 알려준다.
  *  셋째 줄 : r+2번째 줄 까지 길 양 끝에 존재하는 지역의 번호 a, b, 그리고 길의 길이 l (1 ≤ l ≤ 15)가 주어진다.
  */
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
+import static java.util.AbstractMap.Entry;
+import static java.util.AbstractMap.SimpleEntry;
+import static java.util.Comparator.comparingInt;
+
 public class BOJ_14938 {
 
     public static void main(String[] args) throws IOException {
@@ -90,26 +92,23 @@ public class BOJ_14938 {
 
         //방문자, 누적 아이템수, 잔여 수색 범위
         private int dijkstra(int startCity, int maxAreaWidth) {
-            Queue<SimpleEntry<City, Status>> queue = new PriorityQueue<>(comparingInt(entry -> entry.getValue().getAreaWidth()));
+            Queue<SimpleEntry<City, Integer>> queue = new PriorityQueue<>(comparingInt(Entry::getValue));
             boolean[] visited = new boolean[this.getCityCount()+1];
             int result = 0;
 
             City city = this.getCityById(startCity);
-            queue.add(new SimpleEntry<>(city, new Status(city.getItemCount(), 0)));
+            queue.add(new SimpleEntry<>(city, 0));
 
             while (!queue.isEmpty()) {
-                SimpleEntry<City, Status> entry = queue.poll();
+                SimpleEntry<City, Integer> entry = queue.poll();
                 City currentCity = entry.getKey();
-                Status currentStatus = entry.getValue();
-
-                int currentSearchAreaWidth = currentStatus.getAreaWidth();
-                int currentItemCount = currentStatus.getItems();
+                int currentSearchAreaWidth = entry.getValue();
 
                 if (visited[currentCity.getCityName()]) continue;
 
                 visited[currentCity.getCityName()] = true;
 
-                result += currentItemCount;
+                result += currentCity.getItemCount();
 
                 for (SimpleEntry<City, Integer> nextEntry : currentCity.getAvailableCity()) {
                     City nextCity = nextEntry.getKey();
@@ -118,29 +117,11 @@ public class BOJ_14938 {
                     if (visited[nextCity.getCityName()] || currentSearchAreaWidth + nextSearchAreaWidth > maxAreaWidth)
                         continue;
 
-                    queue.add(new SimpleEntry<>(nextCity, new Status(currentItemCount + nextCity.getItemCount(), currentSearchAreaWidth + nextSearchAreaWidth)));
+                    queue.add(new SimpleEntry<>(nextCity, currentSearchAreaWidth + nextSearchAreaWidth));
                 }
             }
 
             return result;
-        }
-    }
-
-    private static class Status {
-        private int items;
-        private int areaWidth;
-
-        public Status(int items, int areaWidth) {
-            this.items = items;
-            this.areaWidth = areaWidth;
-        }
-
-        public int getItems() {
-            return items;
-        }
-
-        public int getAreaWidth() {
-            return areaWidth;
         }
     }
 
