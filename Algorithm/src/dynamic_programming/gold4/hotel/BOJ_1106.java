@@ -26,7 +26,7 @@ public class BOJ_1106 {
 
     private static List<City> cities = new ArrayList<>();
     private static int[][] dp;
-    private static int MAX = 20000;
+    private static int MAX = 1000000;
     private static int MIN_CUSTOMER;
     private static int NUM_OF_CITY;
 
@@ -47,29 +47,51 @@ public class BOJ_1106 {
 
             cities.add(new City(price, customer));
 
-            for (int j = 1; j <= MIN_CUSTOMER; j++) {
+            for (int j = 0; j <= MIN_CUSTOMER; j++) {
                 dp[i][j] = -1;
             }
         }
 
-        System.out.println(minCost(1, cities.get(1).getCustomer()));
-        System.out.println(dp);
+        //System.out.println(topDown(1, 0));
+        System.out.println(bottomUp());
     }
 
-    private static int minCost(int cityNum, int numOfCustomer) {
+    // top down
+    private static int topDown(int cityNum, int numOfCustomer) {
         if (cityNum > NUM_OF_CITY) return MAX;
 
         City city = cities.get(cityNum);
 
-        if (numOfCustomer >= MIN_CUSTOMER) return city.getPrice();
-        if (dp[cityNum][city.getPrice()] != -1) return dp[cityNum][city.getPrice()];
+        if (numOfCustomer >= MIN_CUSTOMER) return 0;
+        if (dp[cityNum][numOfCustomer] != -1) return dp[cityNum][numOfCustomer];
 
-        int visitSameCityCost = city.getPrice() + minCost(cityNum, numOfCustomer + city.getCustomer());
-        int visitNextCityCost = city.getPrice() + minCost(cityNum + 1, numOfCustomer);
+        // 현재 도시 방문
+        int visitCurrentCityCost = city.getPrice() + topDown(cityNum, numOfCustomer + city.getCustomer());
+        // 다음 도시 방문
+        int visitNextCityCost = topDown(cityNum + 1, numOfCustomer);
 
-        dp[cityNum][city.getPrice()] = Math.min(visitSameCityCost, visitNextCityCost);
+        dp[cityNum][numOfCustomer] = Math.min(visitCurrentCityCost, visitNextCityCost);
 
-        return dp[cityNum][city.getPrice()];
+        return dp[cityNum][numOfCustomer];
+    }
+
+    // bottom up
+    private static int bottomUp () {
+        int[] cost = new int[MIN_CUSTOMER+1];
+        Arrays.fill(cost, MAX);
+        cost[0] = 0;
+        for (int customerCount = 1; customerCount <= MIN_CUSTOMER; customerCount++) {
+            for (int cityName = 1; cityName <= NUM_OF_CITY; cityName++) {
+                City city = cities.get(cityName);
+                int price = city.getPrice();
+                int customer = city.getCustomer();
+
+                int prev = Math.max(customerCount - customer, 0);
+                cost[customerCount] = Math.min(cost[customerCount], cost[prev] + price);
+            }
+        }
+
+        return cost[MIN_CUSTOMER];
     }
 
     private static class City {
