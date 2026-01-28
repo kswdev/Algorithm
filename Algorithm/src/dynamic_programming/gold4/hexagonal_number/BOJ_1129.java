@@ -18,13 +18,28 @@ public class BOJ_1129 {
         hexagonalNum.add(0);
         hexagonalNum.add(1);
         dp = new int[n+1];
+        dp[1] = 1;
 
         maxHexagonalNumber(n);
 
-        System.out.println(minHexagonalNumberCount(n));
+        System.out.println(bottomup(n));
     }
 
-    private static int minHexagonalNumberCount(int n) {
+    // bottom-up
+    private static int bottomup(int n) {
+        for (int i = 2; i <= n; i++) {
+            dp[i] = Integer.MAX_VALUE;
+            for (int hex : hexagonalNum) {
+                if (hex > i) break;
+                if (hex == 0) continue;
+                dp[i] = Math.min(dp[i], dp[i-hex] + 1);
+            }
+        }
+        return dp[n];
+    }
+
+    // top-down
+    private static int topdown(int n) {
         if (dp[n] != 0)
             return dp[n];
 
@@ -33,7 +48,7 @@ public class BOJ_1129 {
         for (int hex : hexagonalNum) {
             if (hex > n) break;
             if (hex == 0) continue;
-            min = Math.min(min, minHexagonalNumberCount(n-hex) + 1);
+            min = Math.min(min, topdown(n-hex) + 1);
         }
 
         return dp[n] = min;
@@ -42,7 +57,6 @@ public class BOJ_1129 {
     private static void maxHexagonalNumber(int n) {
         for (int i = 2; hexagonalNum.get(i-1) < n; i++) {
             hexagonalNum.add(hexagonalNum.get(i-1) + ((i-1) * 4) + 1);
-            dp[hexagonalNum.get(i-1)] = 1;
         }
     }
 }
