@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BOJ_1129 {
+public class BOJ_1229 {
 
     private static List<Integer> hexagonalNum = new ArrayList<>();
     private static int[] dp;
