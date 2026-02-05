@@ -1,4 +1,4 @@
-package dynamic_programming.gold3.christmas_tree;
+package dynamic_programming.gold2.christmas_tree;
 
 import java.io.BufferedReader;
 import java.io.IOException;
