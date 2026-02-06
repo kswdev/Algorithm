@@ -22,6 +22,8 @@ import java.util.StringTokenizer;
 
 public class BOJ_1234 {
 
+    private static long[][][][] dp;
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
@@ -31,35 +33,66 @@ public class BOJ_1234 {
         int g = Integer.parseInt(st.nextToken());
         int b = Integer.parseInt(st.nextToken());
 
-    }
-
-    // 구상:
-    // dp에 레벨, 각 RGB 사용 갯수 표현
-    // 탑 다운 방식으로 각 레벨을 거슬러 올라가며 경우의 수 곱셈
-    private static int solve(int lv, int r, int g, int b) {
-
-        // LV 이 1이고
-        if (lv == 1) {
-            // 남은 장난감 수가 1 보다 많다면 그 수만큼 return
-            return geCount(lv, r, g, b);
-        }
-
-        int result = 0;
-
-        // a. 해당 lv 의 배치 개수 덩어리들을 구하고 다음 라운드로 보낸다.
-        // b. 해당 lv 의 조합 가능한 경우의 수와 재귀 호출 결과를 곱한다.
-        // c. a. 의 덩어리 개수만큼 b의 결과들을 합한다.
-        for (int i = 1; i <= 3; i++) {
-            int availableCount = 0;
-            if (lv % i == 0) {
-
+        dp = new long[n+1][r+1][g+1][b+1];
+        for (int i = 0; i <= n; i++) {
+            for (int j = 0; j <= r; j++) {
+                for (int k = 0; k <= g; k++) {
+                    for (int l = 0; l <= b; l++) {
+                        dp[i][j][k][l] = -1;
+                    }
+                }
             }
         }
 
-        return 0;
+        System.out.println(solve(n, r, g, b));
     }
 
-    private static int geCount(int cnt, int r, int g, int b) {
+    private static long solve(int lv, int r, int g, int b) {
+
+        if (dp[lv][r][g][b] != -1) {
+            return dp[lv][r][g][b];
+        }
+
+        if (lv == 1) {
+            return dp[lv][r][g][b] = getCount(lv, r, g, b);
+        }
+
+        long result = 0;
+
+        for (int i = 1; i <= 3; i++) {
+            if (lv % i != 0) continue;
+
+            long count = 0;
+            int sizeOfSet = lv / i;
+
+            if (i == 1) {
+                if (sizeOfSet <= r) count += getNumOfPossible(sizeOfSet, i) * solve(lv - 1, r - sizeOfSet, g, b);
+                if (sizeOfSet <= g) count += getNumOfPossible(sizeOfSet, i) * solve(lv - 1, r, g - sizeOfSet, b);
+                if (sizeOfSet <= b) count += getNumOfPossible(sizeOfSet, i) * solve(lv - 1, r, g, b - sizeOfSet);
+            } else if (i == 2) {
+                if (sizeOfSet <= r && sizeOfSet <= g) count += getNumOfPossible(sizeOfSet, i) * solve(lv - 1, r - sizeOfSet, g - sizeOfSet, b);
+                if (sizeOfSet <= r && sizeOfSet <= b) count += getNumOfPossible(sizeOfSet, i) * solve(lv - 1, r - sizeOfSet, g, b - sizeOfSet);
+                if (sizeOfSet <= g && sizeOfSet <= b) count += getNumOfPossible(sizeOfSet, i) * solve(lv - 1, r, g - sizeOfSet, b - sizeOfSet);
+            } else {
+                if (sizeOfSet <= r && sizeOfSet <= g && sizeOfSet <= b)
+                    count += getNumOfPossible(sizeOfSet, i) * solve(lv - 1, r - sizeOfSet, g - sizeOfSet, b - sizeOfSet);
+            }
+
+            result += count;
+        }
+
+        return dp[lv][r][g][b] = result;
+    }
+
+    private static long getNumOfPossible(int sizeOfSet, int countOfSets) {
+        long factor = factorial(sizeOfSet * countOfSets);
+        for (int i = 0; i < countOfSets; i++) {
+            factor /= factorial(sizeOfSet);
+        }
+        return factor;
+    }
+
+    private static int getCount(int cnt, int r, int g, int b) {
         int result = 0;
         if (r >= cnt) result++;
         if (g >= cnt) result++;
@@ -67,15 +100,11 @@ public class BOJ_1234 {
         return result;
     }
 
-    /**
-     * dp[color][lv][count]
-     *
-     *   1 2 3
-     * 1 1 1 1
-     * 2 2 2 2
-     *
-     *   1 2 3
-     * 1 1 1 0
-     * 2 1 2 0
-     */
+    private static long factorial(int n) {
+        long result = 1;
+        for (int i = 1; i <= n; i++) {
+            result *= i;
+        }
+        return result;
+    }
 }
