@@ -10,7 +10,6 @@ import java.util.StringTokenizer;
 public class BOJ_1272 {
 
     private static long[][] dp;
-    private static boolean[] visited;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -20,7 +19,6 @@ public class BOJ_1272 {
         int root = Integer.parseInt(st.nextToken());
 
         dp = new long[n+1][n+1];
-        visited = new boolean[n+1];
 
         st = new StringTokenizer(br.readLine());
 
@@ -36,11 +34,16 @@ public class BOJ_1272 {
             int first = Integer.parseInt(st.nextToken());
             int second = Integer.parseInt(st.nextToken());
 
-            nodes.get(first).getChildren().add(nodes.get(second));
+            Node firstNode = nodes.get(first);
+            Node secondNode = nodes.get(second);
+
+            Node parentNode = firstNode.getWeight() < secondNode.getWeight() ? firstNode : secondNode;
+            Node childNode = firstNode.getWeight() > secondNode.getWeight() ? firstNode : secondNode;
+
+            parentNode.getChildren().add(childNode);
         }
 
         Node rootNode = nodes.get(root);
-        visited[root] = true;
         System.out.println(dfs(rootNode, nodes.get(0)));
     }
 
@@ -50,16 +53,18 @@ public class BOJ_1272 {
             return dp[currentNode.getNum()][previousSpecialNode.getNum()];
         }
 
-        long result = 0;
-        for (Node nextNode : currentNode.getChildren()) {
+        long currentSpecial = 0;
+        long currentNotSpecial = 0;
 
-            result += Math.min(
-                    dfs(nextNode, previousSpecialNode),
-                    dfs(nextNode, currentNode) + previousSpecialNode.getWeight()
-            );
+        for (Node nextNode : currentNode.getChildren()) {
+            currentSpecial += dfs(nextNode, currentNode);
+            currentNotSpecial += dfs(nextNode, previousSpecialNode);
         }
 
-        result += currentNode.getWeight() - previousSpecialNode.getWeight();
+        currentNotSpecial += (currentNode.getWeight() - previousSpecialNode.getWeight());
+        currentSpecial += currentNode.getWeight();
+
+        long result = Math.min(currentSpecial, currentNotSpecial);
 
         dp[currentNode.getNum()][previousSpecialNode.getNum()] = result;
 
