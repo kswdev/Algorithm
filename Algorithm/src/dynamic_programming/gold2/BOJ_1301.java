@@ -43,6 +43,7 @@ public class BOJ_1301 {
 
         N = Integer.parseInt(br.readLine());
         beadsCount = new int[N];
+
         int depth = 0;
         int count = 1;
         for (int i = 0; i < N; i++) {
@@ -51,15 +52,17 @@ public class BOJ_1301 {
             count *= (beadsCount[i] + 1);
         }
 
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
+        dp = new long[N+1][N+2][count];
+
+        for (int i = 0; i < N + 1; i++) {
+            for (int j = 0; j < N + 2; j++) {
                 for (int k = 0; k < count; k++) {
                     dp[i][j][k] = -1;
                 }
             }
         }
 
-
+        System.out.println(solve(depth, N, N + 1, mapToKey(beadsCount)));
     }
 
     // 구슬은 끝에서부터 채운다.
@@ -68,17 +71,18 @@ public class BOJ_1301 {
     //  => 이전 구슬, 이전 이전 구슬을 끝으로 남은 구슬 수로 가능한 최대 경우의 수
     private static long solve(int depth, int prev, int prevPrev, String beadCount) {
 
-        if (dp[prev][prevPrev][getKey(beadsCount)] != -1)
-            return dp[prev][prevPrev][getKey(beadsCount)];
-
         int[] remainBeads = keyToBeadCount(beadCount);
+
+        if (dp[prev][prevPrev][getKey(remainBeads)] != -1) {
+            return dp[prev][prevPrev][getKey(remainBeads)];
+        }
 
         if (depth == 0) {
             if (isComplete(remainBeads)) return 1;
             return 0;
         }
 
-        int result = 0;
+        long result = 0;
 
         for (int i = 0; i < N; i++) {
             if (i == prev || i == prevPrev || remainBeads[i] == 0) continue;
@@ -87,7 +91,7 @@ public class BOJ_1301 {
             remainBeads[i]++;
         }
 
-        return result;
+        return dp[prev][prevPrev][getKey(remainBeads)] = result;
     }
 
     //
