@@ -1,4 +1,4 @@
-package dynamic_programming.gold2;
+package dynamic_programming.gold2.beads_craft;
 
 /*
  *
