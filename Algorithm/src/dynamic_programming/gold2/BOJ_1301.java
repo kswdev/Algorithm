@@ -29,111 +29,65 @@ package dynamic_programming.gold2;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
 
 public class BOJ_1301 {
 
     private static int N;
     private static int[] beadsCount;
-    private static long[][][] dp;
+    private static long[][][][][][][] dp;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         N = Integer.parseInt(br.readLine());
-        beadsCount = new int[N];
+        beadsCount = new int[5];
 
-        int depth = 0;
-        int count = 1;
         for (int i = 0; i < N; i++) {
             beadsCount[i] = Integer.parseInt(br.readLine());
-            depth += beadsCount[i];
-            count *= (beadsCount[i] + 1);
         }
 
-        dp = new long[N+1][N+2][count];
+        int a = beadsCount[0];
+        int b = beadsCount[1];
+        int c = beadsCount[2];
+        int d = beadsCount[3];
+        int e = beadsCount[4];
 
-        for (int i = 0; i < N + 1; i++) {
-            for (int j = 0; j < N + 2; j++) {
-                for (int k = 0; k < count; k++) {
-                    dp[i][j][k] = -1;
-                }
-            }
-        }
+        dp = new long[N+1][N+1][a+1][b+1][c+1][d+1][e+1];
 
-        System.out.println(solve(depth, N, N + 1, mapToKey(beadsCount)));
+        for (int i = 0; i < N + 1; i++)
+            for (int j = 0; j < N + 1; j++)
+                for (int k = 0; k <= a; k++)
+                    for (int l = 0; l <= b; l++)
+                        for (int m = 0; m <= c; m++)
+                            for (int n = 0; n <= d; n++)
+                                for (int o = 0; o <= e; o++)
+                                    dp[i][j][k][l][m][n][o] = -1;
+
+
+        System.out.println(solve(N, N, beadsCount[0], beadsCount[1], beadsCount[2], beadsCount[3], beadsCount[4]));
     }
 
     // 구슬은 끝에서부터 채운다.
     // 파라미터: depth, 이전 구슬, 이전 이전 구슬, 남은 구슬 수
     // dp[][][]: 이전 구슬, 이전 이전 구슬, 남은 구슬 수
     //  => 이전 구슬, 이전 이전 구슬을 끝으로 남은 구슬 수로 가능한 최대 경우의 수
-    private static long solve(int depth, int prev, int prevPrev, String beadCount) {
+    private static long solve(int prev, int prevPrev, int a, int b, int c, int d, int e) {
 
-        int[] remainBeads = keyToBeadCount(beadCount);
-
-        if (dp[prev][prevPrev][getKey(remainBeads)] != -1) {
-            return dp[prev][prevPrev][getKey(remainBeads)];
+        if (dp[prev][prevPrev][a][b][c][d][e] != -1) {
+            return dp[prev][prevPrev][a][b][c][d][e];
         }
 
-        if (depth == 0) {
-            if (isComplete(remainBeads)) return 1;
-            return 0;
-        }
+        if (a + b + c + d + e == 0) return 1;
 
         long result = 0;
 
         for (int i = 0; i < N; i++) {
-            if (i == prev || i == prevPrev || remainBeads[i] == 0) continue;
-            remainBeads[i]--;
-            result += solve(depth - 1, i, prev, mapToKey(remainBeads));
-            remainBeads[i]++;
+            if (i == prev || i == prevPrev || beadsCount[i] == 0) continue;
+            beadsCount[i]--;
+            result += solve(i, prev, beadsCount[0], beadsCount[1], beadsCount[2], beadsCount[3], beadsCount[4]);
+            beadsCount[i]++;
         }
 
-        return dp[prev][prevPrev][getKey(remainBeads)] = result;
-    }
-
-    //
-    private static int index = 0;
-    private static Map<String, Integer> beadCountMap = new HashMap<>();
-
-    private static int getKey(int[] beadCount) {
-        String key = mapToKey(beadCount);
-
-        if (beadCountMap.containsKey(key))
-            return beadCountMap.get(key);
-        else {
-            beadCountMap.put(key, index);
-            index++;
-            return index - 1;
-        }
-    }
-
-    private static String mapToKey(int[] beadCount) {
-        String key = "" + beadCount[0];
-
-        for (int i = 1; i < beadCount.length; i++) {
-            int count = beadCount[i];
-            key += "-" + count;
-        }
-
-        return key;
-    }
-
-    private static int[] keyToBeadCount(String key) {
-        String[] beadCounts = key.split("-");
-        int[] beadCount = new int[beadCounts.length];
-        for (int i = 0; i < beadCounts.length; i++) {
-            beadCount[i] = Integer.parseInt(beadCounts[i]);
-        }
-        return beadCount;
-    }
-
-    private static boolean isComplete(int[] beadCount) {
-        for (int i = 0; i < N; i++) {
-            if (beadCount[i] != 0) return false;
-        }
-        return true;
+        return dp[prev][prevPrev][a][b][c][d][e] = result;
     }
 }
