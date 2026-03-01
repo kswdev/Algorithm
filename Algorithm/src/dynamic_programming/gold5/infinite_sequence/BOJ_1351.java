@@ -9,32 +9,34 @@ package dynamic_programming.gold5.infinite_sequence;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 public class BOJ_1351 {
 
-    private static int N, P, Q;
-    private static int[] dp;
+    private static int P, Q;
+    private static long N;
+    private static Map<Long, Long> dp = new HashMap<>();
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        N = Integer.parseInt(st.nextToken());
+        N = Long.parseLong(st.nextToken());
         P = Integer.parseInt(st.nextToken());
         Q = Integer.parseInt(st.nextToken());
 
-        dp = new int[N+1];
-        dp[0] = 1;
+        dp.put(0L, 1L);
 
         System.out.println(solve(N));
     }
 
-    private static int solve (int n) {
-        if (dp[n] != 0) return dp[n];
+    private static long solve (long n) {
+        if (dp.containsKey(n)) return dp.get(n);
 
-        dp[n] = solve(n/P) + solve(n/Q);
+        dp.put(n, solve(n/P) + solve(n/Q));
 
-        return dp[n];
+        return dp.get(n);
     }
 }
