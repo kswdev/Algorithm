@@ -56,8 +56,18 @@ public class BOJ_1369 {
             st = new StringTokenizer(br.readLine());
             for (int j = 1; j <= N; j++) {
                 arr[i][j] = Integer.parseInt(st.nextToken());
+                dp[i][j][0] = -1;
+                dp[i][j][1] = -1;
+
+                if (arr[i][j] == 0) {
+                    dp[i][j][0] = INF;
+                    dp[i][j][1] = INF;
+                }
             }
         }
+
+        dp[1][1][0] = countNumInMeasure(arr[1][1], 0);
+        dp[1][1][1] = countNumInMeasure(arr[1][1], 1);
 
         System.out.println(Math.min(solve(N, N)[0], solve(N, N)[1]));
     }
@@ -68,14 +78,11 @@ public class BOJ_1369 {
         if (arr[i][j] == 0)
             return new int[] {INF, INF};
 
+        if (dp[i][j][0] != -1 && dp[i][j][1] != -1)
+            return dp[i][j];
+
         int twoMeasure = countNumInMeasure(arr[i][j], 0);
         int fiveMeasure = countNumInMeasure(arr[i][j], 1);
-
-        if (i == 1 && j == 1) {
-            dp[i][j][0] = twoMeasure;
-            dp[i][j][1] = fiveMeasure;
-            return dp[i][j];
-        }
 
         int[] prevUp = new int[] {INF, INF};
         int[] prevLeft = new int[] {INF, INF};
@@ -87,11 +94,10 @@ public class BOJ_1369 {
         if (j > 1)
             prevLeft = solve(i, j-1);
 
-        if (Math.min(prevUp[0] + twoMeasure, prevUp[1] + fiveMeasure) < Math.min(prevLeft[0] + twoMeasure, prevLeft[1] + fiveMeasure)) {
-            result = new int[] {prevUp[0] + twoMeasure, prevUp[1] + fiveMeasure};
-        } else {
-            result = new int[] {prevLeft[0] + twoMeasure, prevLeft[1] + fiveMeasure};
-        }
+        int minTwo = Math.min(prevUp[0], prevLeft[0]);
+        int minFive = Math.min(prevUp[1], prevLeft[1]);
+
+        result = new int[] {minTwo + twoMeasure, minFive + fiveMeasure};
 
         return dp[i][j] = result;
     }
