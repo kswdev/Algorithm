@@ -31,13 +31,16 @@ package dynamic_programming.gold1.candy;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class BOJ_1415 {
 
     private static int N;
     private static List<Integer> candyCount = new ArrayList<>();
     private static List<Integer> candyValue = new ArrayList<>();
+    private static int zeroCount = 1;
 
     private static long[][] dp;
 
@@ -50,6 +53,12 @@ public class BOJ_1415 {
 
         for (int i = 0; i < N; i++) {
             int price = Integer.parseInt(br.readLine());
+
+            if (price == 0) {
+                zeroCount++;
+                continue;
+            }
+
             if (candyValue.contains(price)) {
                 int index = candyValue.indexOf(price);
                 candyCount.set(index, candyCount.get(index) + 1);
@@ -60,10 +69,10 @@ public class BOJ_1415 {
             sum += price;
         }
 
-        dp = new long[sum+1][candyValue.size()+1];
+        dp = new long[sum+1][candyValue.size()];
 
-        for (int i = 0; i < dp.length; i++) {
-            Arrays.fill(dp[i], -1);
+        for (long[] longs : dp) {
+            Arrays.fill(longs, -1);
         }
 
         long result = 0;
@@ -74,7 +83,7 @@ public class BOJ_1415 {
             }
         }
 
-        System.out.println(result);
+        System.out.println(result * zeroCount);
     }
 
     // 사탕 가격의 합이 n 일 때 조합 갯수
